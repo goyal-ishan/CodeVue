@@ -1,0 +1,86 @@
+.how-it-works {
+    width: 100%;
+    padding: 80px 40px;
+}
+
+.how-it-works-header {
+    text-align: center;
+}
+
+.how-it-works-header span {
+    color: #ef4444;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.how-it-works-header h2 {
+    color: rgb(248, 239, 239);
+    font-size: 36px;
+    margin: 8px 0;
+}
+
+.how-it-works-header p {
+    color: #d1a7a7;
+    font-size: 14px;
+}
+
+.workflow-cards {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 15px;
+    margin-top: 40px;
+}
+
+.workflow-card {
+    background-color: #1e1e21;
+    border: 1px solid #29292d;
+    border-radius: 7px;
+    padding: 25px 20px;
+    min-height: 220px;
+    transition: all 0.3s ease;
+}
+
+.workflow-card:hover {
+    background-color: #252529;
+    border-color: #ef4444;
+    box-shadow: 0 0 20px rgba(239, 68, 68, 0.15);
+    transform: translateY(-5px);
+}
+
+.card-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.card-top span:first-child {
+    color: #f87171;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.card-top span:last-child {
+    color: #ef4444;
+}
+
+.workflow-card h3 {
+    color: rgb(248, 239, 239);
+    font-size: 18px;
+    margin-bottom: 8px;
+}
+
+.workflow-card p {
+    color: #d1a7a7;
+    font-size: 13px;
+    line-height: 1.6;
+}
+
+.workflow-card a {
+    display: block;
+    margin-top: 25px;
+    color: #ef4444;
+    text-decoration: none;
+    font-size: 12px;
+    font-weight: 700;
+}

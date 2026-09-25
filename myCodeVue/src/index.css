@@ -1,0 +1,231 @@
+* { 
+    margin: 0; 
+    padding: 0; 
+    box-sizing: border-box; 
+} 
+html{
+    scroll-behavior: smooth;
+}
+body {
+    background-color: #101014;
+
+    background-image:
+        radial-gradient(
+            circle at 50% 20%,
+            rgba(255, 70, 70, 0.12),
+            transparent 35%
+        );
+
+    color: white;
+    font-family: Arial, sans-serif;
+}
+ 
+/* ========================= 
+   HEADER 
+   ========================= */ 
+ 
+.Header-container { 
+    width: 100%; 
+    height: 75px; 
+ 
+    display: flex; 
+    align-items: center; 
+ 
+    padding: 0 30px; 
+ 
+    background-color: #121212; 
+ 
+    border-bottom: 1px solid #333; 
+ 
+    position: fixed; 
+    top: 0; 
+    left: 0; 
+ 
+    z-index: 1000; 
+} 
+ 
+
+/* ========================= 
+   CODEVUE LOGO 
+   ========================= */ 
+ 
+.header-logo { 
+    display: flex; 
+    align-items: center; 
+} 
+ 
+.header-logo a { 
+    display: flex; 
+    align-items: center; 
+} 
+ 
+.header-logo img { 
+    width: 165px; 
+    height: auto; 
+ 
+    display: block; 
+ 
+    object-fit: contain; 
+} 
+ 
+ 
+/* ========================= 
+   NAVIGATION 
+   ========================= */ 
+ 
+.Header-container nav { 
+    display: flex; 
+    align-items: center; 
+    width: 100%; 
+} 
+ 
+.list-of-pages { 
+    display: flex; 
+    align-items: center; 
+ 
+    gap: 40px; 
+ 
+    list-style: none; 
+    margin-left: 80px; 
+} 
+
+.list-of-pages li a { 
+    color: #e5c8c6; 
+ 
+    text-decoration: none; 
+ 
+    font-size: 15px; 
+    font-weight: 500; 
+ 
+    transition: color 0.2s ease; 
+} 
+ 
+.list-of-pages li a:hover { 
+    color: #f77171; 
+} 
+ 
+ 
+/* ========================= 
+   REGISTRATION 
+   ========================= */ 
+ 
+.registration { 
+    display: flex; 
+    align-items: center; 
+ 
+    gap: 35px; 
+ 
+    list-style: none; 
+ 
+    margin-left: auto; 
+    margin-right: 55px;
+} 
+ 
+.login { 
+    color: #e5c8c6;  
+ 
+    text-decoration: none; 
+ 
+    font-size: 15px; 
+    font-weight: 500; 
+ 
+    transition: color 0.2s ease; 
+} 
+ 
+.login:hover { 
+    color: #f77171; 
+} 
+
+.GetStartedButton{
+    display: inline-block;
+    padding: 10px 15px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-family: Arial, sans-serif;
+    font-size: 16px;
+    cursor: pointer;
+    border: none;
+    color: rgb(9, 9, 9);
+    background-color: rgb(236, 65, 65);
+    transition: background-color 0.15s ease;
+}
+.GetStartedButton:hover{
+    background-color: #f77171;
+}
+.Intro-Content {
+    padding-top: 120px;
+    text-align: center;
+}
+
+.Intro{
+    color:#ffffff;
+}
+
+.sub-Intro{
+    color:#e7dddc;
+}
+
+.Intro-Content{
+    padding-top:150px;
+}
+
+.Intro{
+    font-size:50px;
+    font-family: Arial, sans-sreif;
+}
+.sub-Intro{
+    font-size:48px;
+    font-family: Arial, sans-serif;
+    background: linear-gradient(to right, #f7e4e4, #c80606);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.description{
+    padding-top: 15px;
+    font-family: Arial, Sans-serif;
+    color:#e5c8c6;
+}
+.description p {
+    margin-bottom: 5px;
+}
+
+.startMock {
+    margin-top:30px;
+    padding:12px 22px;
+    border-radius: 10px;
+    border: none;
+
+    background-color: rgb(236, 65, 65);
+    color: rgb(22, 21, 21);
+
+    font-family: Arial, sans-serif;
+    font-size: 30px;
+
+    cursor: pointer;
+    transition: background-color 0.2s ease; 
+}
+
+.startMock:hover{
+    background-color: #ea9393;
+    
+}
+
+.Companies{
+    word-spacing: 25px;
+    font-family: Arial, Sans-serif;
+    font-size: 20px;
+    font-weight:700;
+    color:grey;
+    padding-top:40px;
+    margin-left:545px;
+}
+
+
+.error-message {
+    color: #ef4444;
+    font-size: 13px;
+    margin: 0 0 10px 0;
+    text-align: left;
+}
