@@ -19,6 +19,20 @@ const userSchema=new mongoose.Schema({
     agreeToTerms:{
        type:Boolean,
        required:true
+    },
+    resetPasswordOTP: {
+        type: String,
+        default: null
+    },
+
+    resetPasswordOTPExpiry: {
+        type: Date,
+        default: null
+    },
+
+    resetPasswordOTPVerified: {
+        type: Boolean,
+        default: false
     }
 })
 
