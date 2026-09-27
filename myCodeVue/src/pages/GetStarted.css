@@ -34,17 +34,7 @@
     margin-top: 50px;
     background-color: var(--cv-bg-surface);
     color: var(--cv-text-primary);
-    background-image:
-        radial-gradient(
-            circle at 20% 20%,
-            rgba(255, 70, 70, 0.12),
-            transparent 35%
-        ),
-        radial-gradient(
-            circle at 80% 20%,
-            rgba(255, 70, 70, 0.12),
-            transparent 35%
-        );
+    
     display: flex;
     flex-direction: column;
     align-items: center;

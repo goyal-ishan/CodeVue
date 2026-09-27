@@ -1,6 +1,7 @@
 import Header from "../components/Header.jsx";
 import InterviewSession from "../components/InterviewSession";
 import HowItWorks from "../components/HowItWorks.jsx";
+import Footer from "../components/Footer.jsx";
 function Home(){
     return(
     <>  
@@ -19,7 +20,7 @@ function Home(){
         <p className="Companies">Google Amazon Meta Netflix Stripe</p>
         <InterviewSession/>
         <HowItWorks/>
-        
+        <Footer/>
     </>
     );
 }

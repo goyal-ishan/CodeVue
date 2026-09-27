@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { ArrowRight, Code2 } from 'lucide-react';
 import './GetStarted.css';
 import Header from '../components/Header.jsx';
-
+import Footer from "../components/Footer.jsx";
 function GetStarted() {
     const [formData, setFormData] = useState({
         fullName: '',
@@ -21,7 +21,7 @@ function GetStarted() {
     };
     
     
-    async function onSubmit(data){
+    async function registerUser(data){
         try{
             setError('');
             const response=await fetch('http://localhost:8080/api/auth/register',
@@ -41,6 +41,7 @@ function GetStarted() {
             }
 
             console.log('Registered Successfully');
+            window.location.href='/login';
 
         }catch(error){
             setError('Error while connecting to the server');
@@ -129,7 +130,7 @@ function GetStarted() {
                     className="register-form"
                     onSubmit={(e)=>{
                         e.preventDefault();
-                        onSubmit(formData);
+                        registerUser(formData);
                     }
                     }
                 >
@@ -259,6 +260,7 @@ function GetStarted() {
 
             </div>
         </div>
+        <Footer/>
         </>
     );
 }

@@ -49,26 +49,53 @@ body {
    CODEVUE LOGO 
    ========================= */ 
  
-.header-logo { 
-    display: flex; 
-    align-items: center; 
-} 
+.header-logo {
+    display: flex;
+    align-items: center;
+}
+
+.header-logo a {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    text-decoration: none;
+}
+
+.logo-icon {
+    width: 30px;
+    height: 30px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background-color: #2a2b2f;
+    border-radius: 6px;
+
+    color: #ef4444;
+    font-size: 14px;
+    font-weight: 700;
+    line-height: 1;
+}
+
+.logo-code {
+    color: #ffffff;
+    font-size: 18px;
+    font-weight: 700;
+}
+
+.logo-vue {
+    color: #ef4444;
+    font-size: 18px;
+    font-weight: 700;
+}
  
-.header-logo a { 
-    display: flex; 
-    align-items: center; 
-} 
- 
-.header-logo img { 
-    width: 165px; 
-    height: auto; 
- 
-    display: block; 
- 
-    object-fit: contain; 
-} 
- 
- 
+.greater-than{
+    margin-left:2px;
+}
+.LogoName{
+    margin-left:3px;
+}
 /* ========================= 
    NAVIGATION 
    ========================= */ 

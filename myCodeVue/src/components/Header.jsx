@@ -6,11 +6,16 @@ function Header() {
     return (
         <header className="Header-container">
 
-            <div className="header-logo">
-                <Link to="/">
-                    <img src={logo} alt="CodeVue" />
-                </Link>
-            </div>
+           <div className="header-logo">
+                <div className="logo-icon">
+                     <span>&lt;</span>
+                     <span className="greater-than">&gt;</span>
+                </div>
+                <div className="LogoName">
+                     <span className="logo-code">Code</span>
+                     <span className="logo-vue">Vue</span>
+                </div>
+           </div>
 
             <nav>
                 <ul className="list-of-pages">
