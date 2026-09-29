@@ -55,6 +55,17 @@
         sans-serif;
 
     box-sizing: border-box;
+    background-image:
+        radial-gradient(
+            circle at 20% 20%,
+            rgba(255, 70, 70, 0.12),
+            transparent 35%
+        ),
+        radial-gradient(
+            circle at 80% 20%,
+            rgba(255, 70, 70, 0.12),
+            transparent 35%
+        );
 }
 
 
@@ -73,12 +84,11 @@
     width: 550px;
     height: 380px;
 
-    background:
-        radial-gradient(
-            circle,
-            rgba(239, 68, 68, 0.08) 0%,
-            rgba(18, 19, 22, 0) 70%
-        );
+    background: radial-gradient(
+        circle,
+        rgba(239, 68, 68, 0.08) 0%,
+        rgba(18, 19, 22, 0) 70%
+    );
 
     filter: blur(80px);
 
@@ -121,39 +131,7 @@
     margin-bottom: 24px;
 }
 
-.card-badge {
-    display: inline-flex;
-    align-items: center;
 
-    gap: 6px;
-
-    padding: 4px 10px;
-
-    border-radius: 6px;
-
-    background-color: rgba(239, 68, 68, 0.1);
-
-    border: 1px solid rgba(239, 68, 68, 0.22);
-
-    color: #f87171;
-
-    font-family:
-        ui-monospace,
-        SFMono-Regular,
-        Menlo,
-        Monaco,
-        Consolas,
-        monospace;
-
-    font-size: 10px;
-    font-weight: 700;
-
-    letter-spacing: 0.8px;
-
-    text-transform: uppercase;
-
-    margin-bottom: 12px;
-}
 
 .register-title {
     font-size: 24px;
@@ -304,26 +282,15 @@
 
 .form-input {
     width: 100%;
-
-    padding: 11px 14px;
-
+    padding: 11px 12px;
     background-color: var(--cv-bg-input);
-
     border: 1px solid var(--cv-border-subtle);
-
     border-radius: 8px;
-
     color: #ffffff;
-
     font-size: 13px;
-
     outline: none;
-
     box-sizing: border-box;
-
-    transition:
-        border-color 0.2s,
-        box-shadow 0.2s;
+    transition: border-color 0.2s, box-shadow 0.2s;
 }
 
 .form-input::placeholder {
@@ -332,11 +299,8 @@
 
 .form-input:focus {
     border-color: var(--cv-border-focus);
-
-    box-shadow:
-        0 0 0 2px rgba(239, 68, 68, 0.15);
+    box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.15);
 }
-
 
 /* ==========================================================================
    Terms Checkbox
@@ -492,4 +456,16 @@
     .social-auth-grid {
         grid-template-columns: 1fr;
     }
+}
+
+.logo-code2 {
+    color: #ffffff;
+    font-size: 20px;
+    font-weight: 700;
+}
+
+.logo-vue2 {
+    color: #ef4444;
+    font-size: 20px;
+    font-weight: 700;
 }

@@ -224,7 +224,7 @@
 
 .form-input {
     width: 100%;
-    padding: 11px 40px 11px 40px !important;
+    padding: 11px 12px;
     background-color: var(--cv-bg-input);
     border: 1px solid var(--cv-border-subtle);
     border-radius: 8px;
@@ -244,6 +244,10 @@
     box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.15);
 }
 
+.input-icon-wrapper .form-input {
+    padding-left: 40px !important;
+    text-indent: 0 !important;
+}
 .input-action-right {
     position: absolute;
     right: 12px;

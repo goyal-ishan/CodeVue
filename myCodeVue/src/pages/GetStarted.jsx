@@ -65,13 +65,13 @@ function GetStarted() {
                 {/* Header */}
                 <div className="register-card-header">
 
-                    <div className="card-badge">
-                        <Code2 size={12} />
-                        <span>GET STARTED</span>
-                    </div>
-
                     <h1 className="register-title">
-                        Create your CodeVue account
+                       Create your{' '}
+                        <span className="LogoName2">
+                             <span className="logo-code2">Code</span>
+                             <span className="logo-vue2">Vue</span>
+                        </span>{' '}
+                       account
                     </h1>
 
                     <p className="register-subtitle">
@@ -170,7 +170,7 @@ function GetStarted() {
                             name="email"
                             type="email"
                             className="form-input"
-                            placeholder="Ishan@example.com"
+                            placeholder="e.g. Ishan@example.com"
                             value={formData.email}
                             onChange={handleChange}
                             required

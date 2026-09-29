@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
+import { Link } from "react-router-dom";
 import { ArrowRight, Mail, Lock, Eye, EyeOff } from 'lucide-react';
 import './Login.css';
 import Header from "../components/Header.jsx";
 import Footer from "../components/Footer.jsx";
+
 function Login() {
     const [formData, setFormData] = useState({
         email: '',
@@ -185,12 +187,11 @@ function Login() {
                                 Password
                             </label>
 
-                            <a
-                                href="#forgot"
+                            <Link to="/forget-password"
                                 className="forgot-password-link"
                             >
                                 Forgot password?
-                            </a>
+                            </Link>
 
                         </div>
 
@@ -268,7 +269,7 @@ function Login() {
                     <span>Don't have an account?</span>
 
                     <a
-                        href="/register"
+                        href="/Get Started"
                         className="register-link"
                     >
                         Get Started for free &rarr;
