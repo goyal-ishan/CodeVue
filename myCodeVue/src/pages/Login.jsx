@@ -1,11 +1,15 @@
-import React, { useState } from 'react';
-import { Link } from "react-router-dom";
+import React, { useState, useEffect } from 'react';
+import { Link , useNavigate} from "react-router-dom";
 import { ArrowRight, Mail, Lock, Eye, EyeOff } from 'lucide-react';
 import './Login.css';
 import Header from "../components/Header.jsx";
 import Footer from "../components/Footer.jsx";
 
 function Login() {
+    const navigate = useNavigate();
+    const [loginError, setLoginError] = useState('');
+    const [isLoading, setIsLoading] = useState(false);
+    const [googleError, setGoogleError] = useState('');
     const [formData, setFormData] = useState({
         email: '',
         password: '',
@@ -23,15 +27,99 @@ function Login() {
         }));
     };
 
-    const handleGoogleSignIn = () => {
-        console.log('Initiating Google OAuth login...');
-        // Replace with your auth provider (e.g. Firebase, Supabase, NextAuth)
+    
+   
+const handleGoogleResponse = async (response) => {
+    try {
+        console.log('Google response:', response);
+        setGoogleError('');
+
+        if (response.error || !response.code) {
+            throw new Error(
+                response.error || 'Google did not return an authorization code'
+            );
+        }
+
+        console.log('Sending code to backend...');
+
+        const result = await fetch(
+            'http://localhost:8080/api/auth/google',
+            {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    code: response.code,
+                    agreeToTerms: true
+                })
+            }
+        );
+
+        const data = await result.json();
+
+        console.log('Backend status:', result.status);
+        console.log('Backend response:', data);
+
+        if (!result.ok) {
+            throw new Error(data.message || 'Google login failed');
+        }
+
+        if (!data.accessToken) {
+            throw new Error('Backend did not return an access token');
+        }
+
+        localStorage.setItem('accessToken', data.accessToken);
+
+        console.log('Navigating to Dashboard...');
+        navigate('/Dashboard');
+
+    } catch (error) {
+        console.error('Google sign-in error:', error);
+        setGoogleError(error.message || 'Google sign-in failed');
+    }
+};
+
+
+    useEffect(() => {
+    const script = document.createElement('script');
+
+    script.src = 'https://accounts.google.com/gsi/client';
+    script.async = true;
+    script.defer = true;
+
+    script.onload = () => {
+        console.log('Google script loaded');
+
+        window.googleOAuthClient = window.google.accounts.oauth2.initCodeClient({
+            client_id: import.meta.env.VITE_GOOGLE_CLIENT_ID,
+            scope: 'openid email profile',
+            ux_mode: 'popup',
+            callback: handleGoogleResponse
+        });
     };
 
-    const handleSubmit = async (e) => {
-      e.preventDefault();
+    document.body.appendChild(script);
 
-      try {
+    return () => {
+        document.body.removeChild(script);
+    };
+    }, []);
+
+
+    const handleGoogleSignIn = () => {
+        window.googleOAuthClient.requestCode();
+    };
+
+
+    
+const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    setLoginError('');
+    setIsLoading(true);
+
+    try {
         const response = await fetch(
             'http://localhost:8080/api/auth/login',
             {
@@ -49,16 +137,28 @@ function Login() {
         const result = await response.json();
 
         if (!response.ok) {
-            console.log('Login failed:', result.message);
+            setLoginError(result.message || 'Login failed. Please try again.');
             return;
         }
 
-        console.log('Login successful:', result);
+        if (!result.accessToken) {
+            setLoginError('Login succeeded, but no access token was returned.');
+            return;
+        }
+
+       
+        localStorage.setItem('accessToken', result.accessToken);
+
+        navigate('/Dashboard');
 
     } catch (error) {
-        console.log('Error while logging in:', error);
+        console.error('Error while logging in:', error);
+        setLoginError('Unable to connect to the server. Please try again.');
+    } finally {
+        setIsLoading(false);
     }
-    };
+};
+
 
     return (
         <>
@@ -129,7 +229,11 @@ function Login() {
                         <span>Continue with Google</span>
 
                     </button>
-
+                    {googleError && (
+    <p style={{ color: '#ef4444', marginTop: '10px' }}>
+        {googleError}
+    </p>
+)}
                 </div>
 
                 {/* Divider */}
@@ -251,14 +355,19 @@ function Login() {
                         </span>
 
                     </label>
-
+                    {loginError && (
+                      <p style={{ color: '#ef4444', marginTop: '10px' }}>
+                         {loginError}
+                     </p>
+                    )}
                     {/* Sign In CTA Button */}
                     <button
                         type="submit"
                         className="btn-submit"
                     >
-                        <span>Sign In</span>
-                        <ArrowRight size={16} />
+                        
+    <span>{isLoading ? 'Signing In...' : 'Sign In'}</span>
+    {!isLoading && <ArrowRight size={16} />}
                     </button>
 
                 </form>

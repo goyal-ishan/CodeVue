@@ -10,6 +10,7 @@ import Features from "./pages/Features.jsx"
 import ForgetPassword from './components/ForgetPassword.jsx'
 import VerifyOtp from "./components/VerifyOtp"
 import ResetPassword from "./components/ResetPassword.jsx"
+import Dashboard from "./pages/Dashboard.jsx"
 function App() {
   return(
     <>
@@ -21,6 +22,7 @@ function App() {
           <Route path="/forget-password" element={<ForgetPassword/>}/>
           <Route path="/verify-otp" element={<VerifyOtp/>}/>
           <Route path="/reset-password" element={<ResetPassword/>}/>
+          <Route path="/dashboard" element={<Dashboard/>}/>
       </Routes>
     </>
   )

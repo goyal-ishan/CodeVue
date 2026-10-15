@@ -36,7 +36,7 @@ const ForgotPassword = () => {
                 setIsLoading(false);
                 return;
             }
-
+            
             setMessage(result.message || 'OTP sent successfully to your email');
             console.log('OTP sent successfully');
             
