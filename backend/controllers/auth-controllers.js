@@ -2,6 +2,12 @@ const User=require('../models/user.js');
 const bcrypt=require('bcryptjs');
 const jwt=require('jsonwebtoken');
 const sendMail=require('../utils/sendEmail.js');
+const { OAuth2Client } = require('google-auth-library');
+
+const googleClient = new OAuth2Client(
+    process.env.GOOGLE_CLIENT_ID,
+    process.env.GOOGLE_SECRET_CODE
+);
 
 const registerUser=async(req,res)=>{
       try{
@@ -56,7 +62,7 @@ const loginUser = async (req, res) => {
 
         const user = await User.findOne({ email });
 
-        if (!user) {
+        if (!user || !user.password) {
             return res.status(400).json({
                 success: false,
                 message: 'Invalid email or password'
@@ -94,6 +100,105 @@ const loginUser = async (req, res) => {
         });
     }
 };
+
+const googleAuth = async (req, res) => {
+    try {
+        const { code, agreeToTerms } = req.body;
+
+        if (!code) {
+            return res.status(400).json({
+                success: false,
+                message: 'Google authorization code is required'
+            });
+        }
+
+        const { tokens } = await googleClient.getToken({
+            code,
+            redirect_uri: 'http://localhost:5173'
+        });
+
+        if (!tokens.id_token) {
+            return res.status(401).json({
+                success: false,
+                message: 'Google did not return an ID token'
+            });
+        }
+
+        const ticket = await googleClient.verifyIdToken({
+            idToken: tokens.id_token,
+            audience: process.env.GOOGLE_CLIENT_ID
+        });
+
+        const payload = ticket.getPayload();
+
+        if (!payload || !payload.sub || !payload.email || !payload.email_verified) {
+            return res.status(401).json({
+                success: false,
+                message: 'Google account identity could not be verified'
+            });
+        }
+
+        const { sub: googleId, email, name } = payload;
+
+        let user = await User.findOne({
+            $or: [
+                { googleId },
+                { email: email.toLowerCase() }
+            ]
+        });
+
+        if (!user) {
+            if (agreeToTerms !== true) {
+                return res.status(400).json({
+                    success: false,
+                    message: 'Please accept the Terms of Service and Privacy Policy before creating an account'
+                });
+            }
+
+            user = await User.create({
+                fullName: name || email.split('@')[0],
+                email: email.toLowerCase(),
+                googleId,
+                agreeToTerms: true
+            });
+        } else if (user.googleId && user.googleId !== googleId) {
+            return res.status(409).json({
+                success: false,
+                message: 'This email is linked to a different Google account'
+            });
+        } else if (!user.googleId) {
+            user.googleId = googleId;
+            await user.save();
+        }
+
+        const accessToken = jwt.sign({
+            userId: user._id,
+            userName: user.fullName,
+            email: user.email
+        }, process.env.JWT_SECRET_KEY, {
+            expiresIn: '30m'
+        });
+
+        return res.status(200).json({
+            success: true,
+            message: 'Google authentication successful',
+            accessToken
+        });
+
+    } catch (error) {
+        console.error('Google authentication error:', error.message);
+    console.error(
+        'Google error details:',
+        error.response?.data || error.errors || error
+    );
+
+    return res.status(401).json({
+        success: false,
+        message: 'Google authentication failed. Please try again.'
+    });
+    }
+};
+
 const forgotPassword=async (req,res)=>{
       try{
           const {email} = req.body;
@@ -229,6 +334,7 @@ const resetPassword = async (req, res) => {
 module.exports={
     registerUser,
     loginUser,
+    googleAuth,
     forgotPassword,
     verifyOTP,
     resetPassword,
