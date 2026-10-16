@@ -16,11 +16,11 @@ def start_interview(request: StartInterviewRequest):
 
     initial_state: InterviewState = {
         "started_at": time.time(),
-        "duration_seconds": request.duration_seconds,
-
+       
         "topic": request.topic,
         "difficulty": request.difficulty,
-
+        "duration_seconds": request.duration_seconds,
+        
         "current_question": "",
         "current_answer": "",
 

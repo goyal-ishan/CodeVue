@@ -58,7 +58,6 @@ def generate_question(state: InterviewState) -> dict:
     Generate the next appropriate main interview question.
     """)
 
-
 def analyze_answer(state: InterviewState) -> dict:
     llm = get_llm().with_structured_output(AnswerEvaluation)
 
