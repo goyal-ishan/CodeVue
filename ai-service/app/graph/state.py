@@ -40,6 +40,24 @@ class InterviewStateSchema(TypedDict):
     optimized_followup_question: str
     optimized_followup_answer: str
 
+        # Current interaction
+    current_question: str
+    pending_question_type: Literal[
+        "brute_force_initial",
+        "brute_force_followup",
+        "optimization",
+        "optimized_initial",
+        "optimized_followup",
+        "coding",
+        "finished",
+    ]
+
+    # Brute-force approach
+    brute_force_missing_concepts: List[str]
+
+    # Optimized approach
+    optimized_missing_concepts: List[str]
+
     # Coding round
     coding_started_at: Optional[float]
     coding_duration_seconds: int
@@ -49,6 +67,7 @@ class InterviewStateSchema(TypedDict):
     test_results: List[dict]
     code_score: float
     code_feedback: str
+
 
     # Interview termination
     finish_reason: Optional[
