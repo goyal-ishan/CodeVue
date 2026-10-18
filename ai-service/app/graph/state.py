@@ -1,33 +1,59 @@
 from typing import TypedDict, List, Optional, Literal
 
 
-class InterviewState(TypedDict):
-
-    started_at: float
-    duration_seconds: int
-    
+class InterviewStateSchema(TypedDict):
+    # Interview details
+    interview_id: str
     topic: str
     difficulty: str
-    
-    current_question: str
-    current_answer: str
-    
-    answer_score: float
-    answer_feedback: str
-    missing_concepts: List[str]
-    is_satisfactory: bool
-    
-    followup_question: str
-    followup_answer: str
-    followup_count: int
-    max_followups: int
+    started_at: float
+    duration_seconds: int
 
-    next_action: Literal[
-        "followup",
-        "next_question",
-        "finish"
+    # Coding problem
+    problem: str
+    constraints: List[str]
+    examples: List[str]
+
+    # Current interview phase
+    phase: Literal[
+        "brute_force",
+        "optimized",
+        "coding",
+        "finished"
     ]
 
-    question_count: int
-    conversation_history: List[dict]
+    # Brute-force approach
+    brute_force_answer: str
+    brute_force_score: float
+    brute_force_feedback: str
+    brute_force_satisfactory: bool
+    brute_force_followup_count: int  # maximum 2 
+    brute_force_followup_question: str
+    brute_force_followup_answer: str
+
+    # Optimized approach
+    optimized_answer: str
+    optimized_score: float
+    optimized_feedback: str
+    optimized_satisfactory: bool
+    optimized_followup_count: int  # maximum 2
+    optimized_followup_question: str
+    optimized_followup_answer: str
+
+    # Coding round
+    coding_started_at: Optional[float]
+    coding_duration_seconds: int
+    programming_language: str
+    submitted_code: str
+    code_submitted: bool
+    test_results: List[dict]
+    code_score: float
+    code_feedback: str
+
+    # Interview termination
+    finish_reason: Optional[
+        Literal["submitted", "timeout"]
+    ]
+
+    # Final report
     final_report: Optional[str]

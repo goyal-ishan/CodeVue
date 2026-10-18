@@ -1,172 +1,291 @@
-from langchain_core.messages import BaseMessage, HumanMessage, SystemMessage
 from typing import List, Literal
 from pydantic import BaseModel, Field
-from app.graph.state import InterviewState
+from langchain_core.messages import SystemMessage, HumanMessage
 from app.services.llm import get_llm
+from app.prompts.interviewer import (
+    INTERVIEWER_SYSTEM_PROMPT,
+    ANSWER_EVALUATION_PROMPT,
+    FOLLOWUP_QUESTION_PROMPT,
+    FINAL_REPORT_PROMPT,
+)
+from app.graph.state import InterviewStateSchema
+
+
+class CodingProblem(BaseModel):
+    problem: str = Field(description="Complete coding problem statement")
+    constraints: List[str] = Field(description="Problem constraints")
+    examples: List[str] = Field(description="Input-output examples")
 
 class AnswerEvaluation(BaseModel):
-    answer_score: float = Field(ge=0, le=10)
-    answer_feedback: str
+    score: float = Field(ge=0, le=10)
+    feedback: str
     missing_concepts: List[str]
     is_satisfactory: bool
-    next_action: Literal["followup", "next_question", "finish"]
+
+class FollowupResponse(BaseModel):
+    question: str
 
 
-def generate_question(state: InterviewState) -> dict:
-    llm = get_llm()
+def generate_problem(state: InterviewStateSchema) -> InterviewStateSchema:
+    llm = get_llm().with_structured_output(CodingProblem)
 
-    system_message = SystemMessage(content="""
-    You are an experienced technical interviewer conducting a
-    structured interview for CodeVue.
+    result = llm.invoke([
+        SystemMessage(content=INTERVIEWER_SYSTEM_PROMPT),
+        HumanMessage(content=f"""
+Generate exactly one coding interview problem.
 
-    Follow these rules:
+Topic: {state["topic"]}
+Difficulty: {state["difficulty"]}
 
-    1. Ask exactly ONE new main interview question at a time.
-    2. Every question must be relevant to the selected topic.
-    3. Match the selected difficulty level.
-    4. Progress step by step:
-       - Start with fundamental concepts.
-       - Move to conceptual understanding.
-       - Progress to application and problem-solving.
-       - Ask more challenging questions as appropriate.
-    5. Use the interview history to understand which concepts
-       have already been covered.
-    6. Do not repeat previous questions or test the same concept
-       unnecessarily.
-    7. Choose the next logical concept based on the topic,
-       previous questions, and the candidate's performance.
-    8. Ask a new main question, not a follow-up to the previous
-       question.
-    9. Do not reveal the answer or include an explanation.
-    10. Return only the interview question.
-    """)
+Return the problem statement, constraints, and examples.
+Do not include the solution.
+""")
+    ])
 
-    human_message = HumanMessage(content=f"""
-    Selected topic: {state['topic']}
-    Selected difficulty: {state['difficulty']}
-    Main question number: {state['question_count'] + 1}
+    return {
+        "problem": result.problem,
+        "constraints": result.constraints,
+        "examples": result.examples,
+        "phase": "brute_force",
+    }
 
-    Previous interview history:
-    {state['conversation_history']}
-
-    Latest answer feedback:
-    {state['answer_feedback']}
-
-    Missing concepts identified:
-    {state['missing_concepts']}
-
-    Generate the next appropriate main interview question.
-    """)
-
-def analyze_answer(state: InterviewState) -> dict:
+def evaluate_brute_force(state: InterviewStateSchema) -> dict:
     llm = get_llm().with_structured_output(AnswerEvaluation)
 
-    prompt = f"""
-    You are evaluating a candidate in a technical interview.
+    followup_question = state.get("brute_force_followup_question", "")
+    followup_answer = state.get("brute_force_followup_answer", "")
 
-    Interview topic: {state['topic']}
-    Difficulty: {state['difficulty']}
-    Question: {state['current_question']}
-    Candidate's answer: {state['current_answer']}
+    if followup_question and followup_answer:
+        candidate_response = f"""
+Original brute-force explanation:
+{state["brute_force_answer"]}
 
-    Evaluate the answer fairly.
+Follow-up question:
+{followup_question}
 
-    Rules:
-    - Give a score from 0 to 10.
-    - Explain what was correct and what needs improvement.
-    - List important missing concepts.
-    - Set is_satisfactory to true if the answer is sufficiently correct.
-    - Choose followup if a focused follow-up would help assess
-      an important missing concept.
-    - Choose next_question if the answer has been adequately assessed
-      and no follow-up is needed.
-    - Choose finish only if the interview should end.
+Candidate's follow-up answer:
+{followup_answer}
+"""
+    else:
+        candidate_response = state["brute_force_answer"]
 
-    Return the evaluation using the required structured fields.
-    """
+    result = llm.invoke([
+        SystemMessage(content=ANSWER_EVALUATION_PROMPT),
+        HumanMessage(content=f"""
+Interview phase: Brute-force approach
 
-    evaluation = llm.invoke(prompt)
+Problem:
+{state["problem"]}
 
-    history = list(state["conversation_history"])
-    history.append({
-        "question": state["current_question"],
-        "answer": state["current_answer"],
-        "score": evaluation.answer_score,
-        "feedback": evaluation.answer_feedback,
-        "missing_concepts": evaluation.missing_concepts,
-        "is_satisfactory": evaluation.is_satisfactory
-    })
+Constraints:
+{state["constraints"]}
+
+{candidate_response}
+
+Evaluate whether the proposed brute-force approach is correct.
+Do not require an optimized solution at this stage.
+
+If a follow-up answer is provided, use it to reassess the candidate's
+understanding alongside the original explanation. Do not penalize
+the candidate merely because they needed a hint.
+""")
+    ])
 
     return {
-        "answer_score": evaluation.answer_score,
-        "answer_feedback": evaluation.answer_feedback,
-        "missing_concepts": evaluation.missing_concepts,
-        "is_satisfactory": evaluation.is_satisfactory,
-        "next_action": evaluation.next_action,
-        "conversation_history": history,
-        "current_answer": ""
+        "brute_force_score": result.score,
+        "brute_force_feedback": result.feedback,
+        "brute_force_satisfactory": result.is_satisfactory,
+        "brute_force_missing_concepts": result.missing_concepts,
+    }
+
+def generate_brute_force_followup(state: InterviewStateSchema) -> InterviewStateSchema:
+    llm = get_llm().with_structured_output(FollowupResponse)
+
+    result = llm.invoke([
+        SystemMessage(content=FOLLOWUP_QUESTION_PROMPT),
+        HumanMessage(content=f"""
+Problem:
+{state["problem"]}
+
+Candidate's brute-force explanation:
+{state["brute_force_answer"]}
+
+Evaluation feedback:
+{state["brute_force_feedback"]}
+
+Missing concepts:
+{state.get("brute_force_missing_concepts", [])}
+
+Follow-ups already used:
+{state["brute_force_followup_count"]}
+
+Generate one relevant follow-up question or small hint.
+Do not reveal the complete solution.
+""")
+    ])
+
+    return {
+        "brute_force_followup_question":result.question,
+        "brute_force_followup_count": (
+            state["brute_force_followup_count"] + 1
+        ),
+    }
+
+def ask_for_optimization(state: InterviewStateSchema) -> dict:
+    return {
+        "current_question": (
+            "Good. Now try to optimize your approach. "
+            "Can you improve its time or space complexity?"
+        ),
+        "phase": "optimized",
+    }
+
+def evaluate_optimized(state: InterviewStateSchema) -> dict:
+    llm = get_llm().with_structured_output(AnswerEvaluation)
+
+    followup_question = state.get("optimized_followup_question", "")
+    followup_answer = state.get("optimized_followup_answer", "")
+
+    if followup_question and followup_answer:
+        candidate_response = f"""
+Original optimized explanation:
+{state["optimized_answer"]}
+
+Follow-up question:
+{followup_question}
+
+Candidate's follow-up answer:
+{followup_answer}
+"""
+    else:
+        candidate_response = state["optimized_answer"]
+
+    result = llm.invoke([
+        SystemMessage(content=ANSWER_EVALUATION_PROMPT),
+        HumanMessage(content=f"""
+Interview phase: Optimized approach
+
+Problem:
+{state["problem"]}
+
+Candidate's original brute-force approach:
+{state["brute_force_answer"]}
+
+{candidate_response}
+
+Evaluate correctness, time complexity, space complexity, and edge cases.
+Accept any valid and sufficiently efficient approach.
+
+If a follow-up answer is provided, use it to reassess the candidate's
+understanding alongside the original explanation. Do not penalize
+the candidate merely because they needed a hint.
+""")
+    ])
+
+    return {
+        "optimized_score": result.score,
+        "optimized_feedback": result.feedback,
+        "optimized_satisfactory": result.is_satisfactory,
+        "optimized_missing_concepts": result.missing_concepts,
     }
 
 
-def generate_followup(state: InterviewState) -> dict:
-    llm = get_llm()
+def generate_optimized_followup(state: dict) -> dict:
+    llm = get_llm().with_structured_output(FollowupResponse)
 
-    prompt = f"""
-    You are a technical interviewer for CodeVue.
+    result = llm.invoke([
+        SystemMessage(content=FOLLOWUP_QUESTION_PROMPT),
+        HumanMessage(content=f"""
+Problem:
+{state["problem"]}
 
-    Topic: {state['topic']}
-    Difficulty: {state['difficulty']}
-    Previous question: {state['current_question']}
-    Candidate's answer: {state['conversation_history'][-1]['answer']}
-    Missing concepts: {state['missing_concepts']}
+Candidate's optimized explanation:
+{state["optimized_answer"]}
 
-    Generate exactly one concise follow-up question.
-    Focus on one or more important missing concepts.
-    Do not give away the answer.
-    Return only the question.
-    """
+Evaluation feedback:
+{state["optimized_feedback"]}
 
-    response = llm.invoke(prompt)
-    question = response.content.strip()
+Missing concepts:
+{state.get("optimized_missing_concepts", [])}
+
+Follow-ups already used:
+{state["optimized_followup_count"]}
+
+Generate one relevant follow-up question or small hint.
+Do not reveal the complete optimized solution.
+""")
+    ])
 
     return {
-        "current_question": question,
-        "current_answer": "",
-        "followup_question": question,
-        "followup_answer": "",
-        "followup_count": state["followup_count"] + 1,
-        "next_action": "followup"
+        "optimized_followup_question": result.question,
+        "optimized_followup_count": (
+            state["optimized_followup_count"] + 1
+        ),
     }
 
 
-def generate_report(state: InterviewState) -> dict:
+def generate_report(state: dict) -> dict:
     llm = get_llm()
 
-    prompt = f"""
-    Generate a final technical interview report for CodeVue.
+    response = llm.invoke([
+        SystemMessage(content=FINAL_REPORT_PROMPT),
+        HumanMessage(content=f"""
+Generate the final report using the interview data below.
 
-    Topic: {state['topic']}
-    Difficulty: {state['difficulty']}
-    Duration: {state['duration_seconds']} seconds
+Problem:
+{state.get("problem", "Not available")}
 
-    Interview history:
-    {state['conversation_history']}
+Brute-force explanation:
+{state.get("brute_force_answer", "Not provided")}
 
-    Include:
-    1. Overall performance summary
-    2. Strengths
-    3. Weaknesses and missing concepts
-    4. Scores and feedback for individual answers
-    5. Specific recommendations for improvement
+Brute-force score:
+{state.get("brute_force_score", "Not evaluated")}
 
-    Be constructive and base the report on the interview history.
-    If there are no evaluated answers, clearly state that
-    insufficient answers were provided to assess performance.
-    """
+Brute-force feedback:
+{state.get("brute_force_feedback", "Not available")}
 
-    response = llm.invoke(prompt)
+Optimized explanation:
+{state.get("optimized_answer", "Not provided")}
+
+Optimized score:
+{state.get("optimized_score", "Not evaluated")}
+
+Optimized feedback:
+{state.get("optimized_feedback", "Not available")}
+
+Programming language:
+{state.get("programming_language", "Not specified")}
+
+Submitted code:
+{state.get("submitted_code", "No code submitted")}
+
+Code submitted:
+{state.get("code_submitted", False)}
+
+Code score:
+{state.get("code_score", "Not evaluated")}
+
+Code feedback:
+{state.get("code_feedback", "Not available")}
+
+Test results:
+{state.get("test_results", [])}
+
+Finish reason:
+{state.get("finish_reason", "Not specified")}
+
+Instructions:
+- Summarize the candidate's performance in each interview phase.
+- Highlight strengths and areas for improvement.
+- Use only the supplied evidence; do not invent scores, test results, or candidate responses.
+- Clearly state whether code was submitted and whether it was actually executed against test cases.
+- If code was not submitted, mark the coding assessment as not completed rather than assigning an unsupported conclusion.
+- If test results are unavailable, explicitly state that correctness could not be verified through execution.
+- Provide actionable recommendations for improvement.
+""")
+    ])
 
     return {
-        "final_report": response.content.strip(),
-        "next_action": "finish"
+        "final_report": response.content,
+        "phase": "finished",
     }
