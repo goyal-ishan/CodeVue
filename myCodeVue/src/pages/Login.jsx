@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useAuth } from "../context/AuthContext.jsx";
 import { Link , useNavigate} from "react-router-dom";
 import { ArrowRight, Mail, Lock, Eye, EyeOff } from 'lucide-react';
 import './Login.css';
@@ -6,6 +7,7 @@ import Header from "../components/Header.jsx";
 import Footer from "../components/Footer.jsx";
 
 function Login() {
+    const { setUser } = useAuth();
     const navigate = useNavigate();
     const [loginError, setLoginError] = useState('');
     const [isLoading, setIsLoading] = useState(false);
@@ -72,7 +74,7 @@ const handleGoogleResponse = async (response) => {
         localStorage.setItem('accessToken', data.accessToken);
 
         console.log('Navigating to Dashboard...');
-        navigate('/Dashboard');
+        navigate('/dashboard');
 
     } catch (error) {
         console.error('Google sign-in error:', error);
@@ -148,8 +150,10 @@ const handleSubmit = async (e) => {
 
        
         localStorage.setItem('accessToken', result.accessToken);
-
-        navigate('/Dashboard');
+        localStorage.setItem('userName', result.user.fullName);
+        localStorage.setItem('userEmail', result.user.email);
+        setUser(result.user);
+        navigate('/dashboard');
 
     } catch (error) {
         console.error('Error while logging in:', error);

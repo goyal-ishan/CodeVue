@@ -1,4 +1,6 @@
-import React from 'react';
+import React, {useRef, useState} from 'react';
+import {useAuth} from "../context/AuthContext.jsx"
+
 import {
   Code2,
   Flame,
@@ -12,6 +14,7 @@ import {
   Braces,
 } from 'lucide-react';
 import './Dashboard.css';
+
 
 const tracks = [
   {
@@ -62,16 +65,33 @@ function ZapIcon(props) {
   return <Code2 {...props} />;
 }
 
-export default function DSADashboard({ userName = 'there' }) {
+export default function DSADashboard() {
+  const {user}=useAuth();
+  const userName = user?.fullName || "there";
+  const [highlightTracks, setHighlightTracks]=useState(false);
+  const tracksRef=useRef(null);
   const startInterview = () => {
-    window.location.href = '/mock-interviews/start';
-  };
+        tracksRef.current?.scrollIntoView({
+        behavior: 'smooth',
+        block: 'start',
+      });
 
+      setHighlightTracks(true);
+
+      setTimeout(() => {
+        setHighlightTracks(false);
+      },2000);
+  };
+  
+ 
   return (
     <div className="cv-dashboard">
       <header className="cv-navbar">
         <a href="/dashboard" className="cv-brand" aria-label="CodeVue dashboard">
-          <span className="cv-brand-icon"><Code2 size={19} /></span>
+          <div className="cv-brand-icon">
+               <span>&lt;</span>
+               <span className="greaterThan">&gt;</span>
+          </div>
           <span>Code<span className="cv-brand-accent">Vue</span></span>
         </a>
 
@@ -83,7 +103,9 @@ export default function DSADashboard({ userName = 'there' }) {
         </nav>
 
         <a href="/profile" className="cv-profile-link" aria-label="My profile">
-          <span className="cv-avatar">{userName.trim().charAt(0).toUpperCase() || 'U'}</span>
+          <span className="cv-avatar">
+                {userName !== "there" ? userName.trim().charAt(0).toUpperCase() : "U"}
+          </span>
           <span className="cv-profile-name">{userName}</span>
         </a>
       </header>
@@ -115,8 +137,8 @@ export default function DSADashboard({ userName = 'there' }) {
           </div>
         </section>
 
-        <section className="cv-tracks-section" id="interview-tracks">
-          <div className="cv-section-heading">
+        <section ref={tracksRef} className="cv-tracks-section" id="interview-tracks">
+          <div  className={`cv-section-heading ${highlightTracks ? 'cv-heading-highlight' : ''}`}>
             <div>
               <p className="cv-eyebrow">CHOOSE YOUR FOCUS</p>
               <h2>DSA Interview Tracks</h2>

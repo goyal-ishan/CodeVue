@@ -11,7 +11,9 @@ import ForgetPassword from './components/ForgetPassword.jsx'
 import VerifyOtp from "./components/VerifyOtp"
 import ResetPassword from "./components/ResetPassword.jsx"
 import Dashboard from "./pages/Dashboard.jsx"
-function App() {
+import ProtectedRoute from './components/ProtectedRoutes.jsx'
+import TrackQuestions from "./pages/TrackQuestions";
+function App(){
   return(
     <>
       <Routes>
@@ -22,7 +24,13 @@ function App() {
           <Route path="/forget-password" element={<ForgetPassword/>}/>
           <Route path="/verify-otp" element={<VerifyOtp/>}/>
           <Route path="/reset-password" element={<ResetPassword/>}/>
-          <Route path="/dashboard" element={<Dashboard/>}/>
+          <Route element={<ProtectedRoute/>}>
+                 <Route path="/dashboard" element={<Dashboard/>}/>
+          </Route>
+          <Route
+              path="/tracks/:topicId"
+              element={<TrackQuestions />}
+          />
       </Routes>
     </>
   )

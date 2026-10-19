@@ -25,10 +25,9 @@
 
 .cv-navbar {
   min-height: 72px;
-  padding: 0 5%;
+  padding: 0 3% 0 2%;
   display: flex;
   align-items: center;
-  justify-content: space-between;
   gap: 24px;
   border-bottom: 1px solid var(--cv-border);
   background: rgba(18, 19, 22, 0.96);
@@ -37,12 +36,12 @@
 .cv-brand {
   display: inline-flex;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
   color: var(--cv-text);
   text-decoration: none;
-  font-size: 20px;
+  font-size: 18px;
   font-weight: 800;
-  letter-spacing: -0.6px;
+  letter-spacing: -0.5px;
   white-space: nowrap;
 }
 
@@ -58,18 +57,46 @@
 }
 
 .cv-brand-icon {
-  width: 35px;
-  height: 35px;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0px;
+  background: #292a2f;
+  border: none;
+  border-radius: 6px;
+  color: #ff4545;
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 1;
+  flex-shrink: 0;
+  
+}
+
+.cv-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  color: #fff;
+  text-decoration: none;
+  font-size: 18px;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+  white-space: nowrap;
 }
 
 .cv-brand-accent {
-  color: var(--cv-red);
+  color: #ff4545;
+ 
 }
 
 .cv-nav-links {
   display: flex;
   align-items: center;
   gap: 8px;
+  margin-left:80px;
+  margin-right:auto;
 }
 
 .cv-nav-links a {
@@ -233,8 +260,10 @@
 }
 
 .cv-tracks-section {
-  margin-top: 44px;
+  margin-top:44px;
+  scroll-margin-top: 30px;
 }
+
 
 .cv-section-heading {
   display: flex;
@@ -242,6 +271,8 @@
   justify-content: space-between;
   gap: 16px;
   margin-bottom: 20px;
+  border-radius: 10px;
+  transition: text-shadow 0.3s ease;
 }
 
 .cv-section-heading .cv-eyebrow {
@@ -254,6 +285,16 @@
   letter-spacing: -0.5px;
 }
 
+.cv-heading-highlight .cv-eyebrow {
+  color: #ff5555;
+  text-shadow: 0 0 12px rgba(239, 68, 68, 0.45);
+}
+
+.cv-heading-highlight h2 {
+  font-weight: 800;
+  color: #ffffff;
+  text-shadow: 0 0 16px rgba(239, 68, 68, 0.4);
+}
 .cv-section-subtitle {
   margin: 8px 0 0;
   color: var(--cv-muted);
