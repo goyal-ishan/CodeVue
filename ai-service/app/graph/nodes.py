@@ -2,6 +2,7 @@ from typing import List, Literal
 from pydantic import BaseModel, Field
 from langchain_core.messages import SystemMessage, HumanMessage
 from app.services.llm import get_llm
+from app.data.questions_bank import QUESTION_BANK
 from app.prompts.interviewer import (
     INTERVIEWER_SYSTEM_PROMPT,
     ANSWER_EVALUATION_PROMPT,
@@ -25,27 +26,23 @@ class AnswerEvaluation(BaseModel):
 class FollowupResponse(BaseModel):
     question: str
 
-
 def generate_problem(state: InterviewStateSchema) -> InterviewStateSchema:
-    llm = get_llm().with_structured_output(CodingProblem)
+    problem_id = state["problem_id"]
 
-    result = llm.invoke([
-        SystemMessage(content=INTERVIEWER_SYSTEM_PROMPT),
-        HumanMessage(content=f"""
-Generate exactly one coding interview problem.
+    if problem_id not in QUESTION_BANK:
+        raise ValueError(f"Unknown problem ID: {problem_id}")
 
-Topic: {state["topic"]}
-Difficulty: {state["difficulty"]}
+    selected_problem = QUESTION_BANK[problem_id]
 
-Return the problem statement, constraints, and examples.
-Do not include the solution.
-""")
-    ])
+    if selected_problem["difficulty"] != state["difficulty"]:
+        raise ValueError("Selected problem difficulty does not match.")
 
     return {
-        "problem": result.problem,
-        "constraints": result.constraints,
-        "examples": result.examples,
+        "problem": selected_problem["description"],
+        "constraints": selected_problem["constraints"],
+        "examples": selected_problem["examples"],
+        "problem_title": selected_problem["title"],
+        "test_cases": selected_problem["test_cases"],
         "phase": "brute_force",
     }
 

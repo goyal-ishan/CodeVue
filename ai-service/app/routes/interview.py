@@ -16,6 +16,8 @@ from app.graph.nodes import (
     generate_report,
 )
 from app.graph.state import InterviewStateSchema
+from app.data.questions_bank import QUESTION_BANK
+
 from app.services.interview_store import (
     initialize_interview_store,
     create_interview,
@@ -27,9 +29,19 @@ from app.services.interview_store import (
 router = APIRouter(prefix="/interviews", tags=["Interviews"])
 
 MAX_FOLLOWUPS = 2
-DEFAULT_INTERVIEW_DURATION = 3600
-DEFAULT_CODING_DURATION = 1800
 
+
+INTERVIEW_DURATIONS = {
+    "Easy": 25 * 60,
+    "Medium": 40 * 60,
+    "Hard": 60 * 60,
+}
+
+CODING_DURATIONS = {
+    "Easy": 15 * 60,
+    "Medium": 25 * 60,
+    "Hard": 40 * 60,
+}
 class StartInterviewRequest(BaseModel):
     topic: str = Field(min_length=1, max_length=100)
     difficulty: Literal["Easy", "Medium", "Hard"]
@@ -328,22 +340,40 @@ def _check_deadlines(state: dict) -> dict:
     return state
 
 
+
 @router.post("/start")
 def start_interview(request: StartInterviewRequest):
-    """Generate a problem and persist a complete interview state."""
+    """Load the selected problem and persist a complete interview state."""
     initialize_interview_store()
+
+    problem_id = request.problem_id.strip()
+    selected_problem = QUESTION_BANK.get(problem_id)
+
+    if selected_problem is None:
+        raise HTTPException(
+            status_code=404,
+            detail="Selected coding problem was not found.",
+        )
+
+    difficulty = selected_problem["difficulty"]
+    duration_seconds = INTERVIEW_DURATIONS[difficulty]
+    coding_duration_seconds = CODING_DURATIONS[difficulty]
 
     interview_id = str(uuid4())
 
     state: InterviewStateSchema = {
         "interview_id": interview_id,
-        "topic": request.topic.strip(),
-        "difficulty": request.difficulty,
+        "problem_id": problem_id,
+        "problem_title": selected_problem["title"],
+        "topic": selected_problem["topic"],
+        "difficulty": difficulty,
         "started_at": _now(),
-        "duration_seconds": request.duration_seconds,
+        "duration_seconds": duration_seconds,
+        "coding_duration_seconds": coding_duration_seconds,
         "problem": "",
         "constraints": [],
         "examples": [],
+        "test_cases": [],
         "phase": "brute_force",
         "current_question": "",
         "pending_question_type": "brute_force_initial",
@@ -364,7 +394,6 @@ def start_interview(request: StartInterviewRequest):
         "optimized_followup_question": "",
         "optimized_followup_answer": "",
         "coding_started_at": None,
-        "coding_duration_seconds": request.coding_duration_seconds,
         "programming_language": "",
         "submitted_code": "",
         "code_submitted": False,
@@ -375,20 +404,14 @@ def start_interview(request: StartInterviewRequest):
         "final_report": None,
     }
 
-    # Save first so the interview ID exists even if problem generation fails.
     create_interview(state)
 
     try:
         problem_result = generate_problem(state)
     except Exception:
-        # Preserve the record for diagnostics, but do not return a
-        # successful interview response.
         raise HTTPException(
             status_code=502,
-            detail=(
-                "Problem generation failed. "
-                "The interview record was retained."
-            ),
+            detail="Could not load the selected coding problem.",
         )
 
     updated = update_interview(
@@ -407,11 +430,10 @@ def start_interview(request: StartInterviewRequest):
     if updated is None:
         raise HTTPException(
             status_code=409,
-            detail="Could not persist the generated problem.",
+            detail="Could not persist the selected problem.",
         )
 
     return _public_interview(updated)
-
 
 @router.get("/{interview_id}")
 def get_interview_status(interview_id: str):

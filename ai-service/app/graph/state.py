@@ -8,11 +8,15 @@ class InterviewStateSchema(TypedDict):
     difficulty: str
     started_at: float
     duration_seconds: int
-
+    coding_duration_seconds:int
     # Coding problem
     problem: str
     constraints: List[str]
     examples: List[str]
+
+    problem_id: str
+    problem_title: str
+    test_cases: List[dict]
 
     # Current interview phase
     phase: Literal[
