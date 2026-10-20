@@ -22,7 +22,9 @@ function Header() {
                     <li>
                         <Link to="/">Home</Link>
                     </li>
-
+                    <li>
+                        <Link to="/dashboard">Dashboard</Link>
+                    </li>
                     <li>
                         <a href="#how-it-works">How It Works</a>
                     </li>

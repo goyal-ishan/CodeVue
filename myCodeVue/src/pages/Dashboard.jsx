@@ -11,6 +11,9 @@ import {
   Network,
   Hash,
   TreeDeciduous,
+  MoveHorizontal,
+  PanelsTopLeft,
+  Link,
   Braces,
 } from 'lucide-react';
 import './Dashboard.css';
@@ -19,7 +22,7 @@ import './Dashboard.css';
 const tracks = [
   {
     id: 'arrays-strings',
-    topic: 'Arrays & Strings',
+    topic: 'Array/String',
     icon: Braces,
     description: 'Two pointers, sliding window, prefix sums, and hashing.',
     interviews: 18,
@@ -31,6 +34,41 @@ const tracks = [
     description: 'Greedy strategies, sorting, intervals, and constructive.',
     interviews: 14,
   },
+  {
+  id: 'two-pointers',
+  topic: 'Two Pointers',
+  icon: MoveHorizontal,
+  description: 'Master left and right pointer techniques to solve array and string problems efficiently.',
+  interviews: 5,
+},
+{
+  id: 'sliding-window',
+  topic: 'Sliding Window',
+  icon: PanelsTopLeft,
+  description: 'Solve substring and subarray problems using fixed and variable sliding windows.',
+  interviews: 4,
+},
+{
+  id: 'linked-list',
+  topic: 'Linked List',
+  icon: Link,
+  description: 'Practice pointer manipulation, list reversal, cycle detection, and merging linked lists.',
+  interviews: 5,
+},
+{
+  id: 'stack',
+  topic: 'Stack',
+  icon: Layers,
+  description: 'Learn stack-based problem solving, expression evaluation, and matching parentheses.',
+  interviews: 5,
+},
+{
+  id: 'backtracking',
+  topic: 'Backtracking',
+  icon: GitBranch,
+  description: 'Explore recursive search, permutations, combinations, and constraint-based problems.',
+  interviews: 5,
+},
   {
     id: 'dynamic-programming',
     topic: 'Dynamic Programming',
@@ -144,7 +182,7 @@ export default function DSADashboard() {
               <h2>DSA Interview Tracks</h2>
               <p className="cv-section-subtitle">Pick a topic to explore its mock interviews.</p>
             </div>
-            <span className="cv-track-count">6 topics</span>
+            <span className="cv-track-count">11 topics</span>
           </div>
 
           <div className="cv-tracks-grid">
@@ -172,7 +210,7 @@ export default function DSADashboard() {
           </div>
         </section>
 
-        <section className="cv-bottom-panel">
+        {/* <section className="cv-bottom-panel">
           <div className="cv-bottom-icon"><GitBranch size={20} /></div>
           <div className="cv-bottom-copy">
             <h2>Ready for your next interview?</h2>
@@ -181,7 +219,7 @@ export default function DSADashboard() {
           <button className="cv-btn-primary" onClick={startInterview}>
             Start Interview <ArrowRight size={16} />
           </button>
-        </section>
+        </section> */}
       </main>
 
       <footer className="cv-footer">

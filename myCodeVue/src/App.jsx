@@ -3,7 +3,7 @@ import {Routes, Route} from 'react-router-dom'
 import heroImg from './assets/hero.png'
 import reactLogo from './assets/react.svg'
 import viteLogo from './assets/vite.svg'
-import Login from "./pages/login.jsx"
+import Login from "./pages/Login.jsx"
 import Home from "./pages/Home.jsx"
 import GetStarted from "./pages/GetStarted.jsx"
 import Features from "./pages/Features.jsx"

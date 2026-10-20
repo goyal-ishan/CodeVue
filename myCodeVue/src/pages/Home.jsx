@@ -8,7 +8,6 @@ function Home(){
     const navigate=useNavigate();
     return(
     <>  
-         
         <Header/>
         <div className="Intro-Content">
             <h1 className="Intro">Practice Coding Interviews</h1>
