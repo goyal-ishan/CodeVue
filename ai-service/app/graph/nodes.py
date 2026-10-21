@@ -15,7 +15,7 @@ from app.graph.state import InterviewStateSchema
 class CodingProblem(BaseModel):
     problem: str = Field(description="Complete coding problem statement")
     constraints: List[str] = Field(description="Problem constraints")
-    examples: List[str] = Field(description="Input-output examples")
+    examples: List[dict[str,any]] = Field(description="Input-output examples")
 
 class AnswerEvaluation(BaseModel):
     score: float = Field(ge=0, le=10)

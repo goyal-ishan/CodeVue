@@ -5,7 +5,7 @@ from uuid import uuid4
 
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel, Field, field_validator
-
+from app.services.code_executor import execute_code
 from app.graph.nodes import (
     generate_problem,
     evaluate_brute_force,
@@ -43,20 +43,16 @@ CODING_DURATIONS = {
     "Hard": 40 * 60,
 }
 class StartInterviewRequest(BaseModel):
-    topic: str = Field(min_length=1, max_length=100)
-    difficulty: Literal["Easy", "Medium", "Hard"]
-    duration_seconds: int = Field(default=3600, ge=300, le=7200)
-    coding_duration_seconds: int = Field(default=1800, ge=300, le=3600)
+    problem_id: str = Field(min_length=1, max_length=100)
 
-    @field_validator("topic")
+    @field_validator("problem_id")
     @classmethod
-    def validate_topic(cls, value: str) -> str:
+    def validate_problem_id(cls, value: str) -> str:
         value = value.strip()
         if not value:
-            raise ValueError("Topic cannot be empty or whitespace.")
+            raise ValueError("Problem ID cannot be empty.")
         return value
-
-
+    
 class AnswerRequest(BaseModel):
     answer: str = Field(min_length=1, max_length=20000)
 
@@ -88,7 +84,17 @@ class CodeSubmissionRequest(BaseModel):
             raise ValueError("Programming language cannot be empty.")
         return value
 
+class RunCodeRequest(BaseModel):
+    code: str = Field(min_length=1, max_length=100000)
+    programming_language: str = Field(min_length=1, max_length=50)
 
+    @field_validator("code")
+    @classmethod
+    def validate_code(cls, value: str) -> str:
+        if not value.strip():
+            raise ValueError("Code cannot be empty.")
+        return value
+    
 def _now() -> float:
     return time.time()
 
@@ -97,6 +103,8 @@ def _public_interview(state: dict) -> dict:
     """Return interview data safe for the frontend."""
     fields = [
         "interview_id",
+        "problem_id",
+        "problem_title",
         "topic",
         "difficulty",
         "problem",
@@ -482,17 +490,43 @@ def submit_answer(interview_id: str, request: AnswerRequest):
 
     return _public_interview(state)
 
+@router.post("/{interview_id}/run")
+async def run_code(interview_id: str, request: RunCodeRequest):
+    """
+    Execute code against public test cases for dry-run testing.
+    Does not finalize or advance the interview phase.
+    """
+    state = _load_interview(interview_id)
+    state = _check_deadlines(state)
+
+    if state["phase"] == "finished":
+        raise HTTPException(
+            status_code=409,
+            detail="This interview has already finished.",
+        )
+
+    problem = QUESTION_BANK.get(state["problem_id"])
+    if not problem:
+        raise HTTPException(status_code=404, detail="Problem definition not found.")
+
+    # Use public test cases from the question bank
+    test_cases = problem.get("test_cases", [])
+    if not test_cases:
+        raise HTTPException(status_code=400, detail="No test cases defined for this problem.")
+
+    execution_result = await execute_code(
+        code=request.code,
+        language=request.programming_language,
+        test_cases=test_cases,
+    )
+
+    return execution_result
 
 @router.post("/{interview_id}/code")
-def submit_code(
-    interview_id: str,
-    request: CodeSubmissionRequest,
-):
+async def submit_code(interview_id: str, request: CodeSubmissionRequest):
     """
-    Store submitted code and finish the interview.
-
-    Actual code execution is not performed here. A sandboxed execution
-    service must be connected before test results can be reported.
+    Execute submitted code against test cases, record real performance scores,
+    and finalize the interview.
     """
     state = _load_interview(interview_id)
     state = _check_deadlines(state)
@@ -515,24 +549,46 @@ def submit_code(
             detail="Code has already been submitted.",
         )
 
+    problem = QUESTION_BANK.get(state["problem_id"])
+    test_cases = problem.get("test_cases", []) if problem else []
+
+    # Execute against the test cases
+    execution = await execute_code(
+        code=request.code,
+        language=request.programming_language,
+        test_cases=test_cases,
+    )
+
+    total_tests = execution.get("total_tests", 0)
+    passed_tests = execution.get("passed_tests", 0)
+
+    # Calculate score out of 10
+    if total_tests > 0:
+        calculated_score = round((passed_tests / total_tests) * 10.0, 1)
+    else:
+        calculated_score = 0.0
+
+    feedback = (
+        f"Passed {passed_tests}/{total_tests} test cases."
+        if execution.get("success")
+        else f"Execution Error: {execution.get('error', 'Unknown failure')}"
+    )
+
+    # Persist the actual execution outcomes into interview state
     state = _persist(
         state,
         {
             "submitted_code": request.code,
             "programming_language": request.programming_language,
             "code_submitted": True,
-            "code_feedback": (
-                "Code was submitted but has not been executed. "
-                "Correctness is not verified."
-            ),
-            "test_results": [],
+            "code_score": calculated_score,
+            "code_feedback": feedback,
+            "test_results": execution.get("results", []),
         },
     )
 
     state = _finish_interview(state, "submitted")
-
     return _public_interview(state)
-
 
 @router.get("/{interview_id}/report")
 def get_interview_report(interview_id: str):
