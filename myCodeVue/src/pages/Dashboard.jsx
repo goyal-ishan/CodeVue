@@ -165,14 +165,14 @@ export default function DSADashboard() {
               <a className="cv-btn-secondary" href="/progress">View My Progress</a>
             </div>
           </div>
-          <div className="cv-streak-card">
+          {/* <div className="cv-streak-card">
             <span className="cv-streak-icon"><Flame size={21} /></span>
             <div>
               <p className="cv-streak-label">Current streak</p>
               <p className="cv-streak-value">14 days</p>
               <p className="cv-streak-note">Keep showing up!</p>
             </div>
-          </div>
+          </div> */}
         </section>
 
         <section ref={tracksRef} className="cv-tracks-section" id="interview-tracks">

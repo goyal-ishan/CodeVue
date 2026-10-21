@@ -12,6 +12,11 @@ const topicNames = {
   graphs: "Graphs",
   "number-theory": "Number Theory",
   "trees-advanced-ds": "Trees & Advanced DS",
+  "two-pointers":"Two Pointers",
+  "sliding-window":"Sliding Window",
+  "linked-list": "Linked List",
+  stack:"Stack",
+  backtracking:"BackTracking",
 };
 
 export default function TrackQuestions(){
@@ -107,7 +112,7 @@ export default function TrackQuestions(){
         <div className="cv-question-list">
           {filteredQuestions.map((question, index) => (
             <Link
-              to={`/questions/${question.id}`}
+              to={`/interview/${question.id}`}
               className="cv-question-row"
               key={question.id}
             >

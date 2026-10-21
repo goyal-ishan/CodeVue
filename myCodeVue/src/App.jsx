@@ -13,6 +13,7 @@ import ResetPassword from "./components/ResetPassword.jsx"
 import Dashboard from "./pages/Dashboard.jsx"
 import ProtectedRoute from './components/ProtectedRoutes.jsx'
 import TrackQuestions from "./pages/TrackQuestions";
+import InterviewWorkspace from './pages/InterviewWorkspace.jsx'
 function App(){
   return(
     <>
@@ -31,6 +32,9 @@ function App(){
               path="/tracks/:topicId"
               element={<TrackQuestions />}
           />
+          <Route element={<ProtectedRoute/>}>
+                 <Route path="/interview/:questionId" element={<InterviewWorkspace/>}/>
+          </Route>
       </Routes>
     </>
   )
