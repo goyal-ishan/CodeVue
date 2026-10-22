@@ -38,10 +38,10 @@ const registerUser=async(req,res)=>{
         
         if(!newUser)
         {
-           return res.status(400).json({
-            success:false,
-            message:'Unable To Register User'
-           })
+            return res.status(400).json({
+                status:false,
+                message:"User already exists",
+            })
         }
 
         return res.status(201).json({
