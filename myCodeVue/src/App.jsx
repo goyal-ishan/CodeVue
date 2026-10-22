@@ -35,6 +35,7 @@ function App(){
           <Route element={<ProtectedRoute/>}>
                  <Route path="/interview/:questionId" element={<InterviewWorkspace/>}/>
           </Route>
+          
       </Routes>
     </>
   )
