@@ -124,9 +124,9 @@ To mirror real technical interviews, CodeVue separates the session into two inde
               Optimistic     │                              │ Subprocess / HTTP
              State Updates   ▼                              ▼
           ┌──────────────────────┐             ┌─────────────────────────┐
-          │     MongoDB Atlas    │             │   Execution Engine      │
-          │ Versioned Interviews │             │ Piston / Native Host    │
-          │ User Progress Logs   │             │ (Python, C++, Java)     │
+          │     MongoDB Atlas    │             |    Native Execution     │
+          │ Versioned Interviews │             │     Host Compilers      │
+          │ User Progress Logs   │             │   (Python, C++, Java)   │
           └──────────────────────┘             └─────────────────────────┘
 ```
 
