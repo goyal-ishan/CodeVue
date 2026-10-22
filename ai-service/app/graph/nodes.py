@@ -1,10 +1,10 @@
-from typing import List, Literal
+from typing import List, Dict, Any, Optional
 from pydantic import BaseModel, Field
 from langchain_core.messages import SystemMessage, HumanMessage
+
 from app.services.llm import get_llm
 from app.data.questions_bank import QUESTION_BANK
 from app.prompts.interviewer import (
-    INTERVIEWER_SYSTEM_PROMPT,
     ANSWER_EVALUATION_PROMPT,
     FOLLOWUP_QUESTION_PROMPT,
     FINAL_REPORT_PROMPT,
@@ -15,7 +15,8 @@ from app.graph.state import InterviewStateSchema
 class CodingProblem(BaseModel):
     problem: str = Field(description="Complete coding problem statement")
     constraints: List[str] = Field(description="Problem constraints")
-    examples: List[dict[str,any]] = Field(description="Input-output examples")
+    examples: List[Dict[str, Any]] = Field(description="Input-output examples")
+    
 
 class AnswerEvaluation(BaseModel):
     score: float = Field(ge=0, le=10)
@@ -23,28 +24,32 @@ class AnswerEvaluation(BaseModel):
     missing_concepts: List[str]
     is_satisfactory: bool
 
+
 class FollowupResponse(BaseModel):
     question: str
 
-def generate_problem(state: InterviewStateSchema) -> InterviewStateSchema:
-    problem_id = state["problem_id"]
 
+def generate_problem(state: InterviewStateSchema) -> dict:
+    problem_id = state["problem_id"]
+    
     if problem_id not in QUESTION_BANK:
         raise ValueError(f"Unknown problem ID: {problem_id}")
-
+    
     selected_problem = QUESTION_BANK[problem_id]
-
+    
     if selected_problem["difficulty"] != state["difficulty"]:
         raise ValueError("Selected problem difficulty does not match.")
-
+    
     return {
         "problem": selected_problem["description"],
         "constraints": selected_problem["constraints"],
         "examples": selected_problem["examples"],
         "problem_title": selected_problem["title"],
+        "starter_code": selected_problem.get("starter_code", {}),
         "test_cases": selected_problem["test_cases"],
         "phase": "brute_force",
     }
+
 
 def evaluate_brute_force(state: InterviewStateSchema) -> dict:
     llm = get_llm().with_structured_output(AnswerEvaluation)
@@ -95,7 +100,8 @@ the candidate merely because they needed a hint.
         "brute_force_missing_concepts": result.missing_concepts,
     }
 
-def generate_brute_force_followup(state: InterviewStateSchema) -> InterviewStateSchema:
+
+def generate_brute_force_followup(state: InterviewStateSchema) -> dict:
     llm = get_llm().with_structured_output(FollowupResponse)
 
     result = llm.invoke([
@@ -122,11 +128,10 @@ Do not reveal the complete solution.
     ])
 
     return {
-        "brute_force_followup_question":result.question,
-        "brute_force_followup_count": (
-            state["brute_force_followup_count"] + 1
-        ),
+        "brute_force_followup_question": result.question,
+        "brute_force_followup_count": state["brute_force_followup_count"] + 1,
     }
+
 
 def ask_for_optimization(state: InterviewStateSchema) -> dict:
     return {
@@ -136,6 +141,7 @@ def ask_for_optimization(state: InterviewStateSchema) -> dict:
         ),
         "phase": "optimized",
     }
+
 
 def evaluate_optimized(state: InterviewStateSchema) -> dict:
     llm = get_llm().with_structured_output(AnswerEvaluation)
@@ -215,9 +221,7 @@ Do not reveal the complete optimized solution.
 
     return {
         "optimized_followup_question": result.question,
-        "optimized_followup_count": (
-            state["optimized_followup_count"] + 1
-        ),
+        "optimized_followup_count": state["optimized_followup_count"] + 1,
     }
 
 
@@ -283,6 +287,6 @@ Instructions:
     ])
 
     return {
-        "final_report": response.content,
+        "final_report": str(response.content),
         "phase": "finished",
     }

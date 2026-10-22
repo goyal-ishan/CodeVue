@@ -4,13 +4,16 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-MONGO_URI = os.getenv("INTERVIEW_MONGO_URI")
-if not MONGO_URI:
-    raise ValueError("INTERVIEW_MONGO_URI is missing from .env")
+MONGO_URI = (
+    os.getenv("INTERVIEW_MONGO_URI")
+    or os.getenv("MONGO_URI")
+    or os.getenv("MONGODB_URI")
+    or "mongodb://localhost:27017"
+)
 
 client = MongoClient(
     MONGO_URI,
-    serverSelectionTimeoutMS=5000
+    serverSelectionTimeoutMS=5000,
 )
 
 db = client["codevue_interviews"]

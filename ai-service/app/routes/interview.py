@@ -1,10 +1,10 @@
-
 import time
 from typing import Literal
 from uuid import uuid4
 
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel, Field, field_validator
+
 from app.services.code_executor import execute_code
 from app.graph.nodes import (
     generate_problem,
@@ -25,11 +25,9 @@ from app.services.interview_store import (
     update_interview,
 )
 
-
 router = APIRouter(prefix="/interviews", tags=["Interviews"])
 
 MAX_FOLLOWUPS = 2
-
 
 INTERVIEW_DURATIONS = {
     "Easy": 25 * 60,
@@ -42,6 +40,8 @@ CODING_DURATIONS = {
     "Medium": 25 * 60,
     "Hard": 40 * 60,
 }
+
+
 class StartInterviewRequest(BaseModel):
     problem_id: str = Field(min_length=1, max_length=100)
 
@@ -52,7 +52,8 @@ class StartInterviewRequest(BaseModel):
         if not value:
             raise ValueError("Problem ID cannot be empty.")
         return value
-    
+
+
 class AnswerRequest(BaseModel):
     answer: str = Field(min_length=1, max_length=20000)
 
@@ -84,6 +85,7 @@ class CodeSubmissionRequest(BaseModel):
             raise ValueError("Programming language cannot be empty.")
         return value
 
+
 class RunCodeRequest(BaseModel):
     code: str = Field(min_length=1, max_length=100000)
     programming_language: str = Field(min_length=1, max_length=50)
@@ -94,7 +96,8 @@ class RunCodeRequest(BaseModel):
         if not value.strip():
             raise ValueError("Code cannot be empty.")
         return value
-    
+
+
 def _now() -> float:
     return time.time()
 
@@ -110,6 +113,7 @@ def _public_interview(state: dict) -> dict:
         "problem",
         "constraints",
         "examples",
+        "starter_code",  # Added to allow dynamic Monaco editor templates
         "phase",
         "current_question",
         "pending_question_type",
@@ -140,10 +144,8 @@ def _public_interview(state: dict) -> dict:
 
 def _load_interview(interview_id: str) -> dict:
     state = get_interview(interview_id)
-
     if state is None:
         raise HTTPException(status_code=404, detail="Interview not found")
-
     return state
 
 
@@ -175,7 +177,6 @@ def _finish_interview(state: dict, reason: str) -> dict:
 
     finished_state = {**state, **updates}
     report_result = generate_report(finished_state)
-
     updates.update(report_result)
 
     return _persist(state, updates)
@@ -221,20 +222,12 @@ def _evaluate_brute_force_answer(state: dict, answer: str) -> dict:
     pending_type = state["pending_question_type"]
 
     if pending_type == "brute_force_initial":
-        state = _persist(
-            state,
-            {"brute_force_answer": answer},
-        )
-
+        state = _persist(state, {"brute_force_answer": answer})
         result = evaluate_brute_force(state)
         state = _persist(state, result)
 
     elif pending_type == "brute_force_followup":
-        state = _persist(
-            state,
-            {"brute_force_followup_answer": answer},
-        )
-
+        state = _persist(state, {"brute_force_followup_answer": answer})
         result = evaluate_brute_force(state)
         state = _persist(state, result)
 
@@ -249,20 +242,15 @@ def _evaluate_brute_force_answer(state: dict, answer: str) -> dict:
 
     if state["brute_force_followup_count"] < MAX_FOLLOWUPS:
         followup = generate_brute_force_followup(state)
-
         return _persist(
             state,
             {
                 **followup,
                 "pending_question_type": "brute_force_followup",
-                "current_question": followup[
-                    "brute_force_followup_question"
-                ],
+                "current_question": followup["brute_force_followup_question"],
             },
         )
 
-    # The follow-up limit is reached. Continue the interview while
-    # preserving the evaluation result for the final report.
     return _advance_after_brute_force(state)
 
 
@@ -271,20 +259,12 @@ def _evaluate_optimized_answer(state: dict, answer: str) -> dict:
     pending_type = state["pending_question_type"]
 
     if pending_type == "optimized_initial":
-        state = _persist(
-            state,
-            {"optimized_answer": answer},
-        )
-
+        state = _persist(state, {"optimized_answer": answer})
         result = evaluate_optimized(state)
         state = _persist(state, result)
 
     elif pending_type == "optimized_followup":
-        state = _persist(
-            state,
-            {"optimized_followup_answer": answer},
-        )
-
+        state = _persist(state, {"optimized_followup_answer": answer})
         result = evaluate_optimized(state)
         state = _persist(state, result)
 
@@ -299,19 +279,15 @@ def _evaluate_optimized_answer(state: dict, answer: str) -> dict:
 
     if state["optimized_followup_count"] < MAX_FOLLOWUPS:
         followup = generate_optimized_followup(state)
-
         return _persist(
             state,
             {
                 **followup,
                 "pending_question_type": "optimized_followup",
-                "current_question": followup[
-                    "optimized_followup_question"
-                ],
+                "current_question": followup["optimized_followup_question"],
             },
         )
 
-    # Continue to coding after the permitted follow-ups.
     return _advance_after_optimized(state)
 
 
@@ -322,31 +298,23 @@ def _check_deadlines(state: dict) -> dict:
     if state["phase"] == "finished":
         return state
 
-    interview_deadline = (
-        state["started_at"] + state["duration_seconds"]
-    )
-
+    interview_deadline = state["started_at"] + state["duration_seconds"]
     if now >= interview_deadline:
         return _finish_interview(state, "timeout")
 
     if state["phase"] == "coding":
         coding_started_at = state.get("coding_started_at")
-
         if coding_started_at is None:
             raise HTTPException(
                 status_code=500,
                 detail="Coding deadline was not initialized.",
             )
 
-        coding_deadline = (
-            coding_started_at + state["coding_duration_seconds"]
-        )
-
+        coding_deadline = coding_started_at + state["coding_duration_seconds"]
         if now >= coding_deadline:
             return _finish_interview(state, "timeout")
 
     return state
-
 
 
 @router.post("/start")
@@ -360,7 +328,7 @@ def start_interview(request: StartInterviewRequest):
     if selected_problem is None:
         raise HTTPException(
             status_code=404,
-            detail="Selected coding problem was not found.",
+            detail=f"Selected problem '{problem_id}' was not found in the question bank.",
         )
 
     difficulty = selected_problem["difficulty"]
@@ -381,6 +349,7 @@ def start_interview(request: StartInterviewRequest):
         "problem": "",
         "constraints": [],
         "examples": [],
+        "starter_code": selected_problem.get("starter_code", {}),
         "test_cases": [],
         "phase": "brute_force",
         "current_question": "",
@@ -443,18 +412,18 @@ def start_interview(request: StartInterviewRequest):
 
     return _public_interview(updated)
 
+
 @router.get("/{interview_id}")
 def get_interview_status(interview_id: str):
     """Retrieve the current question and interview status."""
     state = _load_interview(interview_id)
     state = _check_deadlines(state)
-
     return _public_interview(state)
 
 
 @router.post("/{interview_id}/answer")
 def submit_answer(interview_id: str, request: AnswerRequest):
-    """Process the answer expected by the interview's current phase."""
+    """Process the explanation answer for the current interview phase."""
     state = _load_interview(interview_id)
     state = _check_deadlines(state)
 
@@ -490,12 +459,10 @@ def submit_answer(interview_id: str, request: AnswerRequest):
 
     return _public_interview(state)
 
+
 @router.post("/{interview_id}/run")
 async def run_code(interview_id: str, request: RunCodeRequest):
-    """
-    Execute code against public test cases for dry-run testing.
-    Does not finalize or advance the interview phase.
-    """
+    """Execute code against public test cases for dry-run testing."""
     state = _load_interview(interview_id)
     state = _check_deadlines(state)
 
@@ -509,10 +476,11 @@ async def run_code(interview_id: str, request: RunCodeRequest):
     if not problem:
         raise HTTPException(status_code=404, detail="Problem definition not found.")
 
-    # Use public test cases from the question bank
     test_cases = problem.get("test_cases", [])
     if not test_cases:
-        raise HTTPException(status_code=400, detail="No test cases defined for this problem.")
+        raise HTTPException(
+            status_code=400, detail="No test cases defined for this problem."
+        )
 
     execution_result = await execute_code(
         code=request.code,
@@ -522,12 +490,10 @@ async def run_code(interview_id: str, request: RunCodeRequest):
 
     return execution_result
 
+
 @router.post("/{interview_id}/code")
 async def submit_code(interview_id: str, request: CodeSubmissionRequest):
-    """
-    Execute submitted code against test cases, record real performance scores,
-    and finalize the interview.
-    """
+    """Execute submitted code against test cases, record scores, and finish the interview."""
     state = _load_interview(interview_id)
     state = _check_deadlines(state)
 
@@ -552,7 +518,6 @@ async def submit_code(interview_id: str, request: CodeSubmissionRequest):
     problem = QUESTION_BANK.get(state["problem_id"])
     test_cases = problem.get("test_cases", []) if problem else []
 
-    # Execute against the test cases
     execution = await execute_code(
         code=request.code,
         language=request.programming_language,
@@ -562,19 +527,16 @@ async def submit_code(interview_id: str, request: CodeSubmissionRequest):
     total_tests = execution.get("total_tests", 0)
     passed_tests = execution.get("passed_tests", 0)
 
-    # Calculate score out of 10
-    if total_tests > 0:
-        calculated_score = round((passed_tests / total_tests) * 10.0, 1)
-    else:
-        calculated_score = 0.0
+    calculated_score = (
+        round((passed_tests / total_tests) * 10.0, 1) if total_tests > 0 else 0.0
+    )
 
     feedback = (
         f"Passed {passed_tests}/{total_tests} test cases."
         if execution.get("success")
-        else f"Execution Error: {execution.get('error', 'Unknown failure')}"
+        else f"Execution Error: {execution.get('error', 'Execution failed.')}"
     )
 
-    # Persist the actual execution outcomes into interview state
     state = _persist(
         state,
         {
@@ -590,9 +552,10 @@ async def submit_code(interview_id: str, request: CodeSubmissionRequest):
     state = _finish_interview(state, "submitted")
     return _public_interview(state)
 
+
 @router.get("/{interview_id}/report")
 def get_interview_report(interview_id: str):
-    """Return the final report only after the interview has finished."""
+    """Return the final report after the interview has finished."""
     state = _load_interview(interview_id)
     state = _check_deadlines(state)
 
