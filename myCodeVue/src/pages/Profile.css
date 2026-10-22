@@ -1,0 +1,254 @@
+/* ==========================================================================
+   CodeVue Profile Stylesheet
+   ========================================================================== */
+
+.cv-profile-header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 20px;
+  margin-bottom: 32px;
+}
+
+.cv-profile-header h1 {
+  margin: 0;
+  font-size: clamp(26px, 3vw, 34px);
+  font-weight: 800;
+  letter-spacing: -0.8px;
+}
+
+.cv-profile-subtitle {
+  margin: 8px 0 0;
+  color: var(--cv-muted);
+  font-size: 13.5px;
+  line-height: 1.6;
+}
+
+.cv-btn-danger {
+  min-height: 42px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 16px;
+  border-radius: 9px;
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  color: var(--cv-red);
+  font-weight: 700;
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.18s;
+}
+
+.cv-btn-danger:hover {
+  background: var(--cv-red);
+  color: #fff;
+  border-color: var(--cv-red);
+}
+
+/* -------------------------------------------------------------
+   Layout Structure
+   ------------------------------------------------------------- */
+.cv-profile-layout {
+  display: grid;
+  grid-template-columns: 320px 1fr;
+  gap: 24px;
+  align-items: flex-start;
+}
+
+/* Left Profile Card */
+.cv-profile-card {
+  background: var(--cv-card);
+  border: 1px solid var(--cv-border);
+  border-radius: 16px;
+  padding: 32px 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.cv-profile-avatar-large {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background: var(--cv-red);
+  color: #fff;
+  font-size: 32px;
+  font-weight: 800;
+  display: grid;
+  place-items: center;
+  margin-bottom: 16px;
+  box-shadow: 0 0 24px rgba(239, 68, 68, 0.35);
+}
+
+.cv-profile-card h2 {
+  margin: 0 0 6px;
+  font-size: 20px;
+  font-weight: 800;
+}
+
+.cv-profile-email {
+  margin: 0 0 14px;
+  color: var(--cv-muted);
+  font-size: 13px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.cv-profile-badge {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: #f87171;
+  background: rgba(239, 68, 68, 0.12);
+  border: 1px solid rgba(239, 68, 68, 0.25);
+  padding: 4px 10px;
+  border-radius: 20px;
+}
+
+.cv-profile-card-divider {
+  width: 100%;
+  height: 1px;
+  background: var(--cv-border);
+  margin: 24px 0;
+}
+
+.cv-profile-quick-stats {
+  display: flex;
+  justify-content: space-around;
+  width: 100%;
+}
+
+.cv-pstat-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.cv-pstat-val {
+  font-size: 18px;
+  font-weight: 800;
+  color: var(--cv-text);
+  font-family: monospace;
+}
+
+.cv-pstat-lbl {
+  font-size: 11px;
+  color: var(--cv-subtle);
+  margin-top: 2px;
+  text-transform: uppercase;
+}
+
+/* Right Settings Panel */
+.cv-profile-settings {
+  background: var(--cv-card);
+  border: 1px solid var(--cv-border);
+  border-radius: 16px;
+  padding: 32px;
+}
+
+.cv-settings-section {
+  margin-bottom: 30px;
+}
+
+.cv-settings-section h3 {
+  margin: 0 0 6px;
+  font-size: 17px;
+  font-weight: 700;
+}
+
+.cv-settings-section p {
+  margin: 0 0 16px;
+  color: var(--cv-muted);
+  font-size: 13px;
+}
+
+.cv-form-field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.cv-form-field label {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--cv-text);
+}
+
+.cv-profile-select {
+  max-width: 380px;
+  height: 42px;
+  padding: 0 14px;
+  background: #141518;
+  border: 1px solid var(--cv-border);
+  border-radius: 9px;
+  color: var(--cv-text);
+  font-family: inherit;
+  font-size: 13px;
+  outline: none;
+  cursor: pointer;
+}
+
+.cv-profile-select:focus {
+  border-color: var(--cv-red);
+}
+
+.cv-field-hint {
+  font-size: 12px;
+  color: var(--cv-subtle);
+}
+
+.cv-security-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 18px;
+  background: #141518;
+  border: 1px solid var(--cv-border);
+  border-radius: 10px;
+}
+
+.cv-sec-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.cv-sec-left strong {
+  font-size: 13.5px;
+}
+
+.cv-sec-left p {
+  margin: 2px 0 0;
+  font-size: 12px;
+  color: var(--cv-subtle);
+}
+
+.cv-sec-icon {
+  color: var(--cv-green);
+}
+
+.cv-form-actions {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding-top: 10px;
+}
+
+.cv-save-msg {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--cv-green);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+@media (max-width: 900px) {
+  .cv-profile-layout {
+    grid-template-columns: 1fr;
+  }
+}

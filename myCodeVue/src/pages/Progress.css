@@ -1,0 +1,193 @@
+/* ==========================================================================
+   CodeVue Progress Analytics Stylesheet
+   ========================================================================== */
+
+.cv-progress-header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 20px;
+  margin-bottom: 28px;
+}
+
+.cv-progress-header h1 {
+  margin: 0;
+  font-size: clamp(26px, 3vw, 34px);
+  font-weight: 800;
+  letter-spacing: -0.8px;
+}
+
+.cv-progress-subtitle {
+  margin: 8px 0 0;
+  color: var(--cv-muted);
+  font-size: 13.5px;
+  line-height: 1.6;
+}
+
+.cv-progress-section {
+  margin-top: 40px;
+}
+
+/* -------------------------------------------------------------
+   Phase Performance Cards
+   ------------------------------------------------------------- */
+.cv-phase-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+
+.cv-phase-card {
+  background: var(--cv-card);
+  border: 1px solid var(--cv-border);
+  border-radius: 14px;
+  padding: 22px;
+  display: flex;
+  flex-direction: column;
+}
+
+.cv-phase-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.cv-phase-pill {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--cv-muted);
+  background: #202126;
+  border: 1px solid #2d2e35;
+  padding: 3px 8px;
+  border-radius: 5px;
+}
+
+.cv-phase-score {
+  font-size: 18px;
+  font-weight: 800;
+  color: var(--cv-text);
+  font-family: "JetBrains Mono", Consolas, monospace;
+}
+
+.cv-phase-card h3 {
+  margin: 0 0 6px;
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.cv-phase-card p {
+  margin: 0 0 18px;
+  color: var(--cv-muted);
+  font-size: 12.5px;
+  line-height: 1.6;
+  flex: 1;
+}
+
+/* Progress Bars */
+.cv-progress-bar-bg {
+  width: 100%;
+  height: 6px;
+  background: #25262c;
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.cv-progress-bar-fill {
+  height: 100%;
+  border-radius: 6px;
+  transition: width 0.4s ease;
+}
+
+.cv-fill-green {
+  background: var(--cv-green);
+}
+
+.cv-fill-yellow {
+  background: var(--cv-yellow);
+}
+
+.cv-fill-red {
+  background: var(--cv-red);
+}
+
+/* -------------------------------------------------------------
+   Split Section: Difficulty & Track Bars
+   ------------------------------------------------------------- */
+.cv-progress-split-row {
+  display: grid;
+  grid-template-columns: 1fr 1.6fr;
+  gap: 20px;
+  margin-top: 40px;
+}
+
+.cv-progress-panel {
+  background: var(--cv-card);
+  border: 1px solid var(--cv-border);
+  border-radius: 14px;
+  padding: 24px;
+}
+
+.cv-diff-list {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  margin-top: 18px;
+}
+
+.cv-diff-row {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.cv-diff-label {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 12.5px;
+  font-weight: 600;
+}
+
+/* Track Breakdown List */
+.cv-track-bars-list {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px 20px;
+  margin-top: 18px;
+}
+
+.cv-track-bar-item {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.cv-track-bar-info {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 12px;
+}
+
+.cv-track-bar-name {
+  color: var(--cv-text);
+  font-weight: 600;
+}
+
+.cv-track-bar-counts {
+  color: var(--cv-subtle);
+  font-family: monospace;
+}
+
+@media (max-width: 900px) {
+  .cv-phase-grid,
+  .cv-progress-split-row {
+    grid-template-columns: 1fr;
+  }
+
+  .cv-track-bars-list {
+    grid-template-columns: 1fr;
+  }
+}

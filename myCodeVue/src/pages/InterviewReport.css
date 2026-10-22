@@ -1,0 +1,514 @@
+/* ==========================================================================
+   CodeVue Interview Report Stylesheet
+   ========================================================================== */
+
+.cv-report-breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 22px;
+  font-size: 13px;
+}
+
+.cv-back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--cv-muted);
+  text-decoration: none;
+  font-weight: 600;
+  transition: color 0.18s;
+}
+
+.cv-back-link:hover {
+  color: var(--cv-red);
+}
+
+.cv-breadcrumb-dot {
+  color: var(--cv-subtle);
+}
+
+.cv-breadcrumb-id {
+  color: var(--cv-subtle);
+  font-family: monospace;
+}
+
+/* -------------------------------------------------------------
+   Hero Banner
+   ------------------------------------------------------------- */
+.cv-report-hero {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 24px;
+  padding: 28px 32px;
+  background: linear-gradient(135deg, #1b1c22 0%, #15161a 100%);
+  border: 1px solid var(--cv-border);
+  border-radius: 16px;
+  margin-bottom: 24px;
+}
+
+.cv-report-badges-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.cv-date-badge {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 12px;
+  color: var(--cv-muted);
+}
+
+.cv-report-hero h1 {
+  margin: 0 0 6px;
+  font-size: clamp(24px, 3vw, 32px);
+  font-weight: 800;
+  letter-spacing: -0.8px;
+}
+
+.cv-report-subtitle {
+  margin: 0;
+  color: var(--cv-muted);
+  font-size: 13.5px;
+}
+
+.cv-report-hero-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-shrink: 0;
+}
+
+/* -------------------------------------------------------------
+   Scorecards Grid
+   ------------------------------------------------------------- */
+.cv-scorecard-grid {
+  display: grid;
+  grid-template-columns: 1.3fr repeat(3, 1fr);
+  gap: 16px;
+  margin-bottom: 32px;
+}
+
+.cv-scorecard-box {
+  background: var(--cv-card);
+  border: 1px solid var(--cv-border);
+  border-radius: 14px;
+  padding: 20px 22px;
+  display: flex;
+  flex-direction: column;
+}
+
+.cv-scorecard-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 11.5px;
+  font-weight: 700;
+  color: var(--cv-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  margin-bottom: 8px;
+}
+
+.cv-scorecard-value {
+  font-size: 30px;
+  font-weight: 800;
+  color: var(--cv-text);
+  font-family: "JetBrains Mono", Consolas, monospace;
+  line-height: 1.1;
+}
+
+.cv-scorecard-dim {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--cv-subtle);
+}
+
+.cv-scorecard-sub {
+  margin-top: 8px;
+  font-size: 12px;
+  color: var(--cv-subtle);
+}
+
+.cv-recommendation-pill {
+  margin-top: 10px;
+  display: inline-block;
+  align-self: flex-start;
+  padding: 3px 10px;
+  border-radius: 20px;
+  font-size: 11.5px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.cv-rec-strong {
+  background: rgba(34, 197, 94, 0.15);
+  color: var(--cv-green);
+  border: 1px solid rgba(34, 197, 94, 0.3);
+}
+
+.cv-rec-hire {
+  background: rgba(59, 130, 246, 0.15);
+  color: #60a5fa;
+  border: 1px solid rgba(59, 130, 246, 0.3);
+}
+
+.cv-rec-lean {
+  background: rgba(234, 179, 8, 0.15);
+  color: var(--cv-yellow);
+  border: 1px solid rgba(234, 179, 8, 0.3);
+}
+
+.cv-rec-needs-work {
+  background: rgba(239, 68, 68, 0.15);
+  color: var(--cv-red);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+}
+
+/* -------------------------------------------------------------
+   Tab Navigation
+   ------------------------------------------------------------- */
+.cv-report-tabs {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border-bottom: 1px solid var(--cv-border);
+  margin-bottom: 24px;
+}
+
+.cv-report-tab {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 18px;
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid transparent;
+  color: var(--cv-muted);
+  font-family: inherit;
+  font-size: 13.5px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.18s;
+}
+
+.cv-report-tab:hover {
+  color: var(--cv-text);
+}
+
+.cv-report-tab.active {
+  color: var(--cv-red);
+  border-bottom-color: var(--cv-red);
+}
+
+/* -------------------------------------------------------------
+   Panel & Content Cards
+   ------------------------------------------------------------- */
+.cv-report-panel {
+  background: var(--cv-card);
+  border: 1px solid var(--cv-border);
+  border-radius: 14px;
+  padding: 26px;
+  margin-bottom: 24px;
+}
+
+.cv-panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+  border-bottom: 1px solid #25262c;
+  padding-bottom: 14px;
+}
+
+.cv-panel-title-group {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.cv-panel-title-group h3 {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.cv-finish-badge {
+  font-size: 12px;
+  color: var(--cv-muted);
+  background: #202126;
+  padding: 4px 10px;
+  border-radius: 6px;
+}
+
+.cv-panel-score {
+  font-size: 16px;
+  font-weight: 800;
+  font-family: monospace;
+  color: var(--cv-text);
+}
+
+.cv-markdown-content {
+  color: var(--cv-text);
+  font-size: 14px;
+  line-height: 1.8;
+}
+
+.cv-markdown-content p {
+  margin: 0 0 16px;
+}
+
+/* -------------------------------------------------------------
+   Discussion Bubbles
+   ------------------------------------------------------------- */
+.cv-discussions-container {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.cv-discussion-block {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.cv-bubble-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.cv-bubble-author {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+}
+
+.cv-bubble-author.candidate {
+  color: var(--cv-muted);
+}
+
+.cv-bubble-author.interviewer {
+  color: var(--cv-red);
+}
+
+.cv-bubble-text {
+  background: #141518;
+  border: 1px solid var(--cv-border);
+  border-radius: 10px;
+  padding: 14px 18px;
+  font-size: 13.5px;
+  line-height: 1.6;
+  white-space: pre-wrap;
+}
+
+.cv-bubble-text.feedback {
+  border-left: 3px solid var(--cv-red);
+}
+
+/* -------------------------------------------------------------
+   Code & Test Results Tab
+   ------------------------------------------------------------- */
+.cv-code-tab-container {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.cv-lang-tag {
+  font-size: 11px;
+  font-weight: 700;
+  background: #23242a;
+  color: var(--cv-muted);
+  padding: 2px 7px;
+  border-radius: 4px;
+}
+
+.cv-copy-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 10px;
+  background: #202126;
+  border: 1px solid #33343c;
+  color: var(--cv-muted);
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.18s;
+}
+
+.cv-copy-btn:hover {
+  color: var(--cv-text);
+  border-color: #555660;
+}
+
+.cv-code-display {
+  margin: 0;
+  padding: 18px;
+  background: #0f1013;
+  border: 1px solid #232429;
+  border-radius: 10px;
+  overflow-x: auto;
+  font-family: "JetBrains Mono", Consolas, monospace;
+  font-size: 13px;
+  line-height: 1.6;
+  color: #e2e8f0;
+}
+
+.cv-no-code {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 40px;
+  gap: 12px;
+  color: var(--cv-subtle);
+  font-size: 13px;
+}
+
+/* Test Case Cards */
+.cv-test-results-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.cv-test-case-card {
+  background: #141518;
+  border: 1px solid var(--cv-border);
+  border-radius: 10px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.cv-test-case-card.passed {
+  border-left: 3px solid var(--cv-green);
+}
+
+.cv-test-case-card.failed {
+  border-left: 3px solid var(--cv-red);
+}
+
+.cv-tc-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.cv-tc-index {
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.cv-tc-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 11.5px;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 4px;
+}
+
+.cv-tc-badge.passed {
+  color: var(--cv-green);
+  background: rgba(34, 197, 94, 0.12);
+}
+
+.cv-tc-badge.failed {
+  color: var(--cv-red);
+  background: rgba(239, 68, 68, 0.12);
+}
+
+.cv-tc-body {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+  background: #0f1013;
+  padding: 12px 14px;
+  border-radius: 8px;
+}
+
+.cv-tc-io {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.cv-tc-label {
+  font-size: 11px;
+  color: var(--cv-subtle);
+  text-transform: uppercase;
+  font-weight: 600;
+}
+
+.cv-tc-value {
+  font-family: monospace;
+  font-size: 12.5px;
+  color: var(--cv-text);
+  word-break: break-all;
+}
+
+.cv-diff-failed {
+  color: #f87171;
+}
+
+/* -------------------------------------------------------------
+   Loading & Error States
+   ------------------------------------------------------------- */
+.cv-report-loading-container,
+.cv-report-error-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  min-height: 60vh;
+  padding: 40px 20px;
+}
+
+.cv-report-loading-container h2,
+.cv-report-error-container h2 {
+  margin: 16px 0 8px;
+  font-size: 22px;
+  font-weight: 700;
+}
+
+.cv-report-loading-container p,
+.cv-report-error-container p {
+  margin: 0 0 20px;
+  color: var(--cv-muted);
+  font-size: 14px;
+  max-width: 460px;
+}
+
+.cv-error-actions {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+@media (max-width: 900px) {
+  .cv-scorecard-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .cv-report-hero {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .cv-tc-body {
+    grid-template-columns: 1fr;
+  }
+}

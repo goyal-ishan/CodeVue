@@ -1,0 +1,497 @@
+/* ==========================================================================
+   CodeVue Mock Interviews History Tab Stylesheet
+   ========================================================================== */
+
+.cv-interviews-header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 20px;
+  margin-bottom: 24px;
+}
+/* ==========================================================================
+   CodeVue Mock Interviews History Tab Stylesheet
+   Theme: #121316 (bg), #18191d (card), #2a2b31 (border), #ef4444 (accent)
+   ========================================================================== */
+
+:root {
+  --cv-bg: #121316;
+  --cv-card: #18191d;
+  --cv-card-hover: #1d1e23;
+  --cv-border: #2a2b31;
+  --cv-red: #ef4444;
+  --cv-red-hover: #dc2626;
+  --cv-text: #f9fafb;
+  --cv-muted: #a1a1aa;
+  --cv-subtle: #71717a;
+  --cv-green: #22c55e;
+  --cv-yellow: #eab308;
+}
+
+/* -------------------------------------------------------------
+   Header Section
+   ------------------------------------------------------------- */
+.cv-interviews-header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 20px;
+  margin-bottom: 28px;
+}
+
+.cv-interviews-header h1 {
+  margin: 0;
+  font-size: clamp(26px, 3vw, 34px);
+  font-weight: 800;
+  letter-spacing: -0.8px;
+  color: var(--cv-text);
+}
+
+.cv-interviews-subtitle {
+  margin: 8px 0 0;
+  color: var(--cv-muted);
+  font-size: 13.5px;
+  line-height: 1.6;
+}
+
+/* -------------------------------------------------------------
+   3-Column Metrics Grid
+   ------------------------------------------------------------- */
+.cv-metrics-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin-bottom: 28px;
+}
+
+.cv-metric-box {
+  background: var(--cv-card);
+  border: 1px solid var(--cv-border);
+  border-radius: 14px;
+  padding: 20px 22px;
+  display: flex;
+  flex-direction: column;
+  transition: border-color 0.18s, transform 0.18s;
+}
+
+.cv-metric-box:hover {
+  border-color: #3f4048;
+  transform: translateY(-2px);
+}
+
+.cv-metric-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.cv-metric-title {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--cv-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+}
+
+.cv-metric-icon {
+  color: var(--cv-subtle);
+}
+
+.cv-text-green {
+  color: var(--cv-green) !important;
+}
+
+.cv-text-red {
+  color: var(--cv-red) !important;
+}
+
+.cv-metric-number {
+  font-size: 28px;
+  font-weight: 800;
+  color: var(--cv-text);
+  line-height: 1.1;
+  font-family: inherit;
+}
+
+.cv-stat-dim {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--cv-subtle);
+}
+
+.cv-metric-sub {
+  margin-top: 8px;
+  font-size: 12px;
+  color: var(--cv-subtle);
+}
+
+/* -------------------------------------------------------------
+   Filter & Search Toolbar
+   ------------------------------------------------------------- */
+.cv-history-tools {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin: 32px 0 16px;
+}
+
+.cv-search-input-box {
+  flex: 1;
+  max-width: 440px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--cv-card);
+  border: 1px solid var(--cv-border);
+  border-radius: 9px;
+  padding: 0 14px;
+  height: 42px;
+  color: var(--cv-muted);
+  transition: border-color 0.18s;
+}
+
+.cv-search-input-box:focus-within {
+  border-color: var(--cv-red);
+}
+
+.cv-search-input-box input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: var(--cv-text);
+  font-family: inherit;
+  font-size: 13px;
+}
+
+.cv-status-select {
+  height: 42px;
+  padding: 0 16px;
+  background: var(--cv-card);
+  border: 1px solid var(--cv-border);
+  border-radius: 9px;
+  color: var(--cv-text);
+  font-family: inherit;
+  font-size: 13px;
+  outline: none;
+  cursor: pointer;
+  transition: border-color 0.18s;
+}
+
+.cv-status-select:focus {
+  border-color: var(--cv-red);
+}
+
+/* -------------------------------------------------------------
+   Interview Practice Log Table
+   ------------------------------------------------------------- */
+.cv-history-content {
+  margin-top: 8px;
+}
+
+.cv-history-table-wrapper {
+  overflow-x: auto;
+  background: var(--cv-card);
+  border: 1px solid var(--cv-border);
+  border-radius: 14px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+}
+
+.cv-history-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+  text-align: left;
+}
+
+.cv-history-table th {
+  padding: 14px 18px;
+  background: #141518;
+  color: var(--cv-subtle);
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  border-bottom: 1px solid var(--cv-border);
+  white-space: nowrap;
+}
+
+.cv-history-table td {
+  padding: 16px 18px;
+  border-bottom: 1px solid #232429;
+  color: var(--cv-text);
+  white-space: nowrap;
+  vertical-align: middle;
+}
+
+.cv-history-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.cv-history-table tbody tr {
+  transition: background 0.15s;
+}
+
+.cv-history-table tbody tr:hover {
+  background: rgba(255, 255, 255, 0.025);
+}
+
+.cv-table-problem {
+  font-weight: 700;
+}
+
+.cv-problem-name {
+  color: var(--cv-text);
+  font-size: 13.5px;
+}
+
+/* Badges */
+.cv-topic-badge {
+  font-size: 11.5px;
+  color: var(--cv-muted);
+  background: #202126;
+  border: 1px solid #2d2e35;
+  padding: 3px 8px;
+  border-radius: 5px;
+}
+
+.cv-diff-badge {
+  font-size: 11px;
+  font-weight: 700;
+  padding: 3px 8px;
+  border-radius: 4px;
+  text-transform: uppercase;
+  display: inline-block;
+}
+
+.cv-diff-easy {
+  color: var(--cv-green);
+  background: rgba(34, 197, 94, 0.12);
+  border: 1px solid rgba(34, 197, 94, 0.28);
+}
+
+.cv-diff-medium {
+  color: var(--cv-yellow);
+  background: rgba(234, 179, 8, 0.12);
+  border: 1px solid rgba(234, 179, 8, 0.28);
+}
+
+.cv-diff-hard {
+  color: var(--cv-red);
+  background: rgba(239, 68, 68, 0.12);
+  border: 1px solid rgba(239, 68, 68, 0.28);
+}
+
+.cv-status-badge {
+  font-size: 11.5px;
+  font-weight: 600;
+  padding: 3px 9px;
+  border-radius: 5px;
+  display: inline-block;
+}
+
+.cv-status-finished {
+  color: var(--cv-green);
+  background: rgba(34, 197, 94, 0.12);
+  border: 1px solid rgba(34, 197, 94, 0.25);
+}
+
+.cv-status-coding,
+.cv-status-brute_force,
+.cv-status-optimized {
+  color: #fb923c;
+  background: rgba(251, 146, 60, 0.12);
+  border: 1px solid rgba(251, 146, 60, 0.25);
+}
+
+/* Scores & Date */
+.cv-score-cell {
+  font-weight: 700;
+  font-family: "JetBrains Mono", Consolas, monospace;
+  color: #e2e8f0;
+}
+
+.cv-date-cell {
+  color: var(--cv-muted);
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* Review / Resume CTA Button */
+.cv-resume-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 13px;
+  border-radius: 7px;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--cv-text);
+  background: #1f2025;
+  border: 1px solid #33343c;
+  text-decoration: none;
+  transition: all 0.18s ease;
+}
+
+.cv-resume-btn:hover {
+  background: var(--cv-red);
+  border-color: var(--cv-red);
+  color: #fff;
+  transform: translateX(2px);
+}
+
+/* -------------------------------------------------------------
+   Loading & Empty States
+   ------------------------------------------------------------- */
+.cv-history-loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 50px;
+  background: var(--cv-card);
+  border: 1px solid var(--cv-border);
+  border-radius: 14px;
+  color: var(--cv-muted);
+  font-size: 13.5px;
+}
+
+.cv-history-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 50px 20px;
+  background: var(--cv-card);
+  border: 1px dashed var(--cv-border);
+  border-radius: 14px;
+  gap: 14px;
+}
+
+.cv-muted-icon {
+  color: var(--cv-subtle);
+}
+
+.cv-history-empty h3 {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.cv-history-empty p {
+  margin: 0 0 6px;
+  color: var(--cv-muted);
+  font-size: 13px;
+  max-width: 440px;
+  line-height: 1.6;
+}
+
+/* -------------------------------------------------------------
+   Responsive Breakpoints
+   ------------------------------------------------------------- */
+@media (max-width: 900px) {
+  .cv-metrics-row {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .cv-interviews-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .cv-history-tools {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .cv-search-input-box {
+    max-width: 100%;
+  }
+}
+.cv-interviews-header h1 {
+  margin: 0;
+  font-size: 28px;
+  letter-spacing: -0.8px;
+}
+
+.cv-interviews-subtitle {
+  margin: 8px 0 0;
+  color: var(--cv-muted);
+  font-size: 13.5px;
+  line-height: 1.6;
+}
+
+/* Tools / Search Bar */
+.cv-history-tools {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin: 28px 0 16px;
+}
+
+.cv-search-input-box {
+  flex: 1;
+  max-width: 420px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--cv-card);
+  border: 1px solid var(--cv-border);
+  border-radius: 9px;
+  padding: 0 14px;
+  height: 42px;
+  color: var(--cv-muted);
+}
+
+.cv-search-input-box input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: var(--cv-text);
+  font-family: inherit;
+  font-size: 13px;
+}
+
+.cv-status-select {
+  height: 42px;
+  padding: 0 14px;
+  background: var(--cv-card);
+  border: 1px solid var(--cv-border);
+  border-radius: 9px;
+  color: var(--cv-text);
+  font-family: inherit;
+  font-size: 13px;
+  outline: none;
+  cursor: pointer;
+}
+
+.cv-status-select:focus {
+  border-color: var(--cv-red);
+}
+
+.cv-history-content {
+  margin-top: 8px;
+}
+
+@media (max-width: 768px) {
+  .cv-interviews-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .cv-history-tools {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .cv-search-input-box {
+    max-width: 100%;
+  }
+}

@@ -14,6 +14,10 @@ import Dashboard from "./pages/Dashboard.jsx"
 import ProtectedRoute from './components/ProtectedRoutes.jsx'
 import TrackQuestions from "./pages/TrackQuestions";
 import InterviewWorkspace from './pages/InterviewWorkspace.jsx'
+import MockInterviews from "./pages/MockInterviews.jsx";
+import Progress from "./pages/Progress.jsx";
+import Profile from "./pages/Profile.jsx";
+import InterviewReport from "./pages/InterviewReport.jsx";
 function App(){
   return(
     <>
@@ -27,15 +31,16 @@ function App(){
           <Route path="/reset-password" element={<ResetPassword/>}/>
           <Route element={<ProtectedRoute/>}>
                  <Route path="/dashboard" element={<Dashboard/>}/>
+                 <Route path="/interview/:questionId" element={<InterviewWorkspace/>}/>
+                 <Route path="/mock-interviews" element={<MockInterviews/>}/>
+                 <Route path="/progress" element={<Progress />} />
+                 <Route path="/profile" element={<Profile />} />
+                 <Route path="/interview/:interviewId/report" element={<InterviewReport />} />
           </Route>
           <Route
               path="/tracks/:topicId"
               element={<TrackQuestions />}
           />
-          <Route element={<ProtectedRoute/>}>
-                 <Route path="/interview/:questionId" element={<InterviewWorkspace/>}/>
-          </Route>
-          
       </Routes>
     </>
   )

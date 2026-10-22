@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import { useParams, Link } from "react-router-dom";
 import Editor from "@monaco-editor/react";
+import {useAuth} from "../context/AuthContext"
 import {
   ArrowLeft,
   Clock,
@@ -32,7 +33,7 @@ const DEFAULT_FALLBACK_CODE = {
 
 export default function InterviewWorkspace() {
   const { questionId } = useParams();
-
+  const {user} = useAuth();
   // Core state
   const [interview, setInterview] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -86,7 +87,12 @@ export default function InterviewWorkspace() {
         const response = await fetch(`${API_BASE_URL}/interviews/start`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ problem_id: questionId.trim() }),
+          body: JSON.stringify({
+             problem_id: questionId.trim(),
+             user_email: user?.email||NULL,
+             user_id: user?.user_id||user?.email||NULL,
+           }),
+
         });
 
         if (!response.ok) {

@@ -1,27 +1,23 @@
-
+import React from "react";
 import { Navigate, Outlet } from "react-router-dom";
-import { jwtDecode } from "jwt-decode";
+import { useAuth } from "../context/AuthContext.jsx";
 
-const ProtectedRoute = () => {
-    const token = localStorage.getItem("accessToken");
+export default function ProtectedRoute() {
+  const { user } = useAuth();
 
-    if (!token) {
-        return <Navigate to="/Login" replace />;
-    }
+  // Validate stored tokens against literal "null" / "undefined" strings
+  const rawToken = localStorage.getItem("token") || localStorage.getItem("authToken");
+  const rawEmail = localStorage.getItem("userEmail") || localStorage.getItem("email");
 
-    try {
-        const decoded = jwtDecode(token);
+  const hasValidToken = rawToken && rawToken !== "null" && rawToken !== "undefined";
+  const hasValidEmail = rawEmail && rawEmail !== "null" && rawEmail !== "undefined";
 
-        if (!decoded.exp || decoded.exp * 1000 <= Date.now()) {
-            localStorage.removeItem("accessToken");
-            return <Navigate to="/Login" replace />;
-        }
-    } catch {
-        localStorage.removeItem("accessToken");
-        return <Navigate to="/Login" replace />;
-    }
+  const isAuthenticated = Boolean(user?.email || (hasValidToken && hasValidEmail));
 
-    return <Outlet />;
-};
+  if (!isAuthenticated) {
+    
+    return <Navigate to="/Login" replace />;
+  }
 
-export default ProtectedRoute;
+  return <Outlet />;
+}
