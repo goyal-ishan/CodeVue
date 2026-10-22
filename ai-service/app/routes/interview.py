@@ -1,5 +1,5 @@
 import time
-from typing import Literal
+from typing import Literal,Optional
 from uuid import uuid4
 
 from fastapi import APIRouter, HTTPException
@@ -23,6 +23,7 @@ from app.services.interview_store import (
     create_interview,
     get_interview,
     update_interview,
+    get_interviews_by_user,
 )
 
 router = APIRouter(prefix="/interviews", tags=["Interviews"])
@@ -44,6 +45,8 @@ CODING_DURATIONS = {
 
 class StartInterviewRequest(BaseModel):
     problem_id: str = Field(min_length=1, max_length=100)
+    user_id: Optional[str] = None
+    user_email: Optional[str] = None
 
     @field_validator("problem_id")
     @classmethod
@@ -334,11 +337,15 @@ def start_interview(request: StartInterviewRequest):
     difficulty = selected_problem["difficulty"]
     duration_seconds = INTERVIEW_DURATIONS[difficulty]
     coding_duration_seconds = CODING_DURATIONS[difficulty]
+    user_email = request.user_email.strip().lower() if request.user_email else "guest"
+    user_id = request.user_id.strip() if request.user_id else user_email
 
     interview_id = str(uuid4())
 
     state: InterviewStateSchema = {
         "interview_id": interview_id,
+        "user_id": user_id,
+        "user_email": user_email,
         "problem_id": problem_id,
         "problem_title": selected_problem["title"],
         "topic": selected_problem["topic"],
@@ -459,82 +466,67 @@ def submit_answer(interview_id: str, request: AnswerRequest):
 
     return _public_interview(state)
 
-
 @router.post("/{interview_id}/run")
 async def run_code(interview_id: str, request: RunCodeRequest):
-    """Execute code against public test cases for dry-run testing."""
+    """Execute code strictly against public test cases for dry-run testing."""
     state = _load_interview(interview_id)
     state = _check_deadlines(state)
 
     if state["phase"] == "finished":
-        raise HTTPException(
-            status_code=409,
-            detail="This interview has already finished.",
-        )
+        raise HTTPException(status_code=409, detail="This interview has already finished.")
 
     problem = QUESTION_BANK.get(state["problem_id"])
     if not problem:
         raise HTTPException(status_code=404, detail="Problem definition not found.")
 
-    test_cases = problem.get("test_cases", [])
+    # Run only public test cases
+    test_cases = problem.get("public_test_cases") or problem.get("test_cases", [])
     if not test_cases:
-        raise HTTPException(
-            status_code=400, detail="No test cases defined for this problem."
-        )
+        raise HTTPException(status_code=400, detail="No test cases defined for this problem.")
 
-    execution_result = await execute_code(
+    return await execute_code(
         code=request.code,
         language=request.programming_language,
         test_cases=test_cases,
     )
-
-    return execution_result
 
 
 @router.post("/{interview_id}/code")
 async def submit_code(interview_id: str, request: CodeSubmissionRequest):
-    """Execute submitted code against test cases, record scores, and finish the interview."""
+    """Execute submitted code against ALL test cases (public + hidden) to score."""
     state = _load_interview(interview_id)
     state = _check_deadlines(state)
 
     if state["phase"] == "finished":
-        raise HTTPException(
-            status_code=409,
-            detail="This interview has already finished.",
-        )
-
+        raise HTTPException(status_code=409, detail="This interview has already finished.")
     if state["phase"] != "coding":
-        raise HTTPException(
-            status_code=400,
-            detail="The interview has not reached the coding phase.",
-        )
-
+        raise HTTPException(status_code=400, detail="The interview has not reached the coding phase.")
     if state["code_submitted"]:
-        raise HTTPException(
-            status_code=409,
-            detail="Code has already been submitted.",
-        )
+        raise HTTPException(status_code=409, detail="Code has already been submitted.")
 
     problem = QUESTION_BANK.get(state["problem_id"])
-    test_cases = problem.get("test_cases", []) if problem else []
+    if not problem:
+        raise HTTPException(status_code=404, detail="Problem definition not found.")
+
+    # Combine public + hidden test cases for final grading
+    public_tests = problem.get("public_test_cases") or problem.get("test_cases", [])
+    hidden_tests = problem.get("hidden_test_cases", [])
+    all_test_cases = public_tests + hidden_tests
 
     execution = await execute_code(
         code=request.code,
         language=request.programming_language,
-        test_cases=test_cases,
+        test_cases=all_test_cases,
     )
 
     total_tests = execution.get("total_tests", 0)
     passed_tests = execution.get("passed_tests", 0)
-
-    calculated_score = (
-        round((passed_tests / total_tests) * 10.0, 1) if total_tests > 0 else 0.0
-    )
+    calculated_score = round((passed_tests / total_tests) * 10.0, 1) if total_tests > 0 else 0.0
 
     feedback = (
-        f"Passed {passed_tests}/{total_tests} test cases."
+        f"Passed {passed_tests}/{total_tests} test cases (including hidden edge cases)."
         if execution.get("success")
-        else f"Execution Error: {execution.get('error', 'Execution failed.')}"
+        else f"Execution Error: {execution.get('error', 'Execution failure')}"
     )
 
     state = _persist(
@@ -552,10 +544,9 @@ async def submit_code(interview_id: str, request: CodeSubmissionRequest):
     state = _finish_interview(state, "submitted")
     return _public_interview(state)
 
-
 @router.get("/{interview_id}/report")
 def get_interview_report(interview_id: str):
-    """Return the final report after the interview has finished."""
+    """Return the complete final report and evaluation breakdown."""
     state = _load_interview(interview_id)
     state = _check_deadlines(state)
 
@@ -567,11 +558,53 @@ def get_interview_report(interview_id: str):
 
     return {
         "interview_id": state["interview_id"],
-        "finish_reason": state["finish_reason"],
-        "final_report": state["final_report"],
-        "brute_force_score": state["brute_force_score"],
-        "optimized_score": state["optimized_score"],
-        "code_score": state["code_score"],
-        "code_submitted": state["code_submitted"],
-        "test_results": state["test_results"],
+        "problem_id": state.get("problem_id", ""),
+        "problem_title": state.get("problem_title", "Technical Problem"),
+        "topic": state.get("topic", "Data Structures"),
+        "difficulty": state.get("difficulty", "Medium"),
+        "started_at": state.get("started_at"),
+        "duration_seconds": state.get("duration_seconds", 0),
+        "finish_reason": state.get("finish_reason", "submitted"),
+        "final_report": state.get("final_report", ""),
+        "brute_force_score": state.get("brute_force_score", 0.0),
+        "brute_force_answer": state.get("brute_force_answer", ""),
+        "brute_force_feedback": state.get("brute_force_feedback", ""),
+        "optimized_score": state.get("optimized_score", 0.0),
+        "optimized_answer": state.get("optimized_answer", ""),
+        "optimized_feedback": state.get("optimized_feedback", ""),
+        "code_score": state.get("code_score", 0.0),
+        "code_feedback": state.get("code_feedback", ""),
+        "code_submitted": state.get("code_submitted", False),
+        "submitted_code": state.get("submitted_code", ""),
+        "programming_language": state.get("programming_language", "cpp"),
+        "test_results": state.get("test_results", []),
+    }
+
+@router.get("/user/{user_email}/history")
+def get_user_history(user_email: str):
+    """Retrieve all interview attempts and metrics for a specific user."""
+    clean_email = user_email.strip().lower()
+    interviews = get_interviews_by_user(clean_email)
+    
+    # Calculate quick aggregate summary statistics
+    total = len(interviews)
+    completed = [i for i in interviews if i.get("phase") == "finished"]
+    avg_score = (
+        round(
+            sum(
+                (i.get("brute_force_score", 0) + i.get("optimized_score", 0) + i.get("code_score", 0)) / 3
+                for i in completed
+            ) / len(completed),
+            1
+        )
+        if completed
+        else 0.0
+    )
+
+    return {
+        "user_email": clean_email,
+        "total_interviews": total,
+        "completed_interviews": len(completed),
+        "average_overall_score": avg_score,
+        "interviews": interviews,
     }

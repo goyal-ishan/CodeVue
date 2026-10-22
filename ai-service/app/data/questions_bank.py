@@ -1,162 +1,226 @@
-QEUSTION_BANK = {
-# =========================================================================
-# Arrays & Strings
-# =========================================================================
-"two-sum": {
-"id": "two-sum",
-"title": "Two Sum",
-"topic": "arrays-strings",
-"difficulty": "Easy",
-"duration_seconds": 25 * 60,
-"description": (
-"Given an integer array nums and an integer target, find and return "
-"the indices of the two elements that sum up to target. You may assume "
-"that each test input has strictly one valid solution, and you cannot "
-"use the exact same element index twice."
-),
-"constraints": [
-"2 <= nums.length <= 10^4",
-"-10^9 <= nums[i] <= 10^9",
-"-10^9 <= target <= 10^9",
-"Exactly one valid solution exists.",
-],
-"examples": [
-{
-"input": "nums = [2, 7, 11, 15], target = 9",
-"output": "[0, 1]",
-"explanation": "nums[0] + nums[1] equals 9, so [0, 1] is returned.",
-},
-{
-"input": "nums = [3, 2, 4], target = 6",
-"output": "[1, 2]",
-"explanation": "nums[1] + nums[2] equals 6, so [1, 2] is returned.",
-},
-],
-"starter_code": {
-"cpp": "class Solution {\npublic:\n    vector twoSum(vector& nums, int target) {\n        // Your code here\n    }\n};",
-"python": "class Solution:\n    def twoSum(self, nums: list[int], target: int) -> list[int]:\n        # Your code here\n        pass",
-"java": "class Solution {\n    public int[] twoSum(int[] nums, int target) {\n        // Your code here\n        return new int[]{};\n    }\n}",
-},
-"test_cases": [
-{"input": {"nums": [2, 7, 11, 15], "target": 9}, "expected_output": [0, 1]},
-{"input": {"nums": [3, 2, 4], "target": 6}, "expected_output": [1, 2]},
-],
-},
-
-"best-time-to-buy": {
-    "id": "best-time-to-buy",
-    "title": "Best Time to Buy and Sell Stock",
-    "topic": "arrays-strings",
-    "difficulty": "Easy",
-    "duration_seconds": 25 * 60,
-    "description": (
-        "You are provided an array prices where prices[i] denotes the price "
-        "of a given asset on day i. Find the maximum profit achievable by picking "
-        "a single day to purchase the asset and selecting a strictly later day "
-        "to sell it. If no profit is possible, return 0."
-    ),
-    "constraints": [
-        "1 <= prices.length <= 10^5",
-        "0 <= prices[i] <= 10^4",
-    ],
-    "examples": [
-        {
-            "input": "prices = [7, 1, 5, 3, 6, 4]",
-            "output": "5",
-            "explanation": "Buy on day 2 (price = 1) and sell on day 5 (price = 6), profit = 6 - 1 = 5.",
+QUESTION_BANK = {
+    # =========================================================================
+    # Arrays & Strings
+    # =========================================================================
+    "two-sum": {
+        "id": "two-sum",
+        "title": "Two Sum",
+        "topic": "arrays-strings",
+        "difficulty": "Easy",
+        "duration_seconds": 25 * 60,
+        "description": (
+            "Given an integer array nums and an integer target, find and return "
+            "the indices of the two elements that sum up to target. You may assume "
+            "that each test input has strictly one valid solution, and you cannot "
+            "use the exact same element index twice."
+        ),
+        "constraints": [
+            "2 <= nums.length <= 10^4",
+            "-10^9 <= nums[i] <= 10^9",
+            "-10^9 <= target <= 10^9",
+            "Exactly one valid solution exists.",
+        ],
+        "examples": [
+            {
+                "input": "nums = [2, 7, 11, 15], target = 9",
+                "output": "[0, 1]",
+                "explanation": "nums[0] + nums[1] equals 9, so [0, 1] is returned.",
+            },
+            {
+                "input": "nums = [3, 2, 4], target = 6",
+                "output": "[1, 2]",
+                "explanation": "nums[1] + nums[2] equals 6, so [1, 2] is returned.",
+            },
+        ],
+        "starter_code": {
+            "cpp": "class Solution {\npublic:\n    vector<int> twoSum(vector<int>& nums, int target) {\n        // Your code here\n    }\n};",
+            "python": "class Solution:\n    def twoSum(self, nums: list[int], target: int) -> list[int]:\n        # Your code here\n        pass\n",
+            "java": "class Solution {\n    public int[] twoSum(int[] nums, int target) {\n        // Your code here\n        return new int[]{};\n    }\n}",
         },
-        {
-            "input": "prices = [7, 6, 4, 3, 1]",
-            "output": "0",
-            "explanation": "Prices continuously fall; no profitable trade exists.",
-        },
-    ],
-    "starter_code": {
-        "cpp": "class Solution {\npublic:\n    int maxProfit(vector<int>& prices) {\n        // Your code here\n    }\n};",
-        "python": "class Solution:\n    def maxProfit(self, prices: list[int]) -> int:\n        # Your code here\n        pass",
-        "java": "class Solution {\n    public int maxProfit(int[] prices) {\n        // Your code here\n        return 0;\n    }\n}",
+        "public_test_cases": [
+            {"input": {"nums": [2, 7, 11, 15], "target": 9}, "expected_output": [0, 1]},
+            {"input": {"nums": [3, 2, 4], "target": 6}, "expected_output": [1, 2]},
+        ],
+        "hidden_test_cases": [
+            # Minimal length with identical complement elements
+            {"input": {"nums": [3, 3], "target": 6}, "expected_output": [0, 1]},
+            # Negative numbers and zero target
+            {"input": {"nums": [-3, 4, 3, 90], "target": 0}, "expected_output": [0, 2]},
+            # Negative target with all negative values
+            {"input": {"nums": [-10, -5, -2, -8], "target": -7}, "expected_output": [1, 2]},
+            # Indices located at extreme boundaries (first and last index)
+            {"input": {"nums": [1, 5, 8, 12, 19, 25, 99], "target": 100}, "expected_output": [0, 6]},
+            # Large magnitude values canceling out
+            {"input": {"nums": [1000000000, -1000000000], "target": 0}, "expected_output": [0, 1]},
+        ],
+        "test_cases": [
+            {"input": {"nums": [2, 7, 11, 15], "target": 9}, "expected_output": [0, 1]},
+            {"input": {"nums": [3, 2, 4], "target": 6}, "expected_output": [1, 2]},
+        ],
     },
-    "test_cases": [
-        {"input": {"prices": [7, 1, 5, 3, 6, 4]}, "expected_output": 5},
-        {"input": {"prices": [7, 6, 4, 3, 1]}, "expected_output": 0},
-    ],
-},
 
-"best-time-to-buyII": {
-    "id": "best-time-to-buyII",
-    "title": "Best Time to Buy and Sell Stock II",
-    "topic": "arrays-strings",
-    "difficulty": "Medium",
-    "duration_seconds": 40 * 60,
-    "description": (
-        "You are given an integer array prices. On any day, you may decide to "
-        "buy or sell the stock. You may hold at most one share at any given time, "
-        "but you can buy and sell on the same day. Determine the maximum cumulative "
-        "profit you can achieve."
-    ),
-    "constraints": [
-        "1 <= prices.length <= 3 * 10^4",
-        "0 <= prices[i] <= 10^4",
-    ],
-    "examples": [
-        {
-            "input": "prices = [7, 1, 5, 3, 6, 4]",
-            "output": "7",
-            "explanation": "Buy day 2 (1), sell day 3 (5) = +4. Buy day 4 (3), sell day 5 (6) = +3. Total = 7.",
+    "best-time-to-buy": {
+        "id": "best-time-to-buy",
+        "title": "Best Time to Buy and Sell Stock",
+        "topic": "arrays-strings",
+        "difficulty": "Easy",
+        "duration_seconds": 25 * 60,
+        "description": (
+            "You are provided an array prices where prices[i] denotes the price "
+            "of a given asset on day i. Find the maximum profit achievable by picking "
+            "a single day to purchase the asset and selecting a strictly later day "
+            "to sell it. If no profit is possible, return 0."
+        ),
+        "constraints": [
+            "1 <= prices.length <= 10^5",
+            "0 <= prices[i] <= 10^4",
+        ],
+        "examples": [
+            {
+                "input": "prices = [7, 1, 5, 3, 6, 4]",
+                "output": "5",
+                "explanation": "Buy on day 2 (price = 1) and sell on day 5 (price = 6), profit = 6 - 1 = 5.",
+            },
+            {
+                "input": "prices = [7, 6, 4, 3, 1]",
+                "output": "0",
+                "explanation": "Prices continuously fall; no profitable trade exists.",
+            },
+        ],
+        "starter_code": {
+            "cpp": "class Solution {\npublic:\n    int maxProfit(vector<int>& prices) {\n        // Your code here\n    }\n};",
+            "python": "class Solution:\n    def maxProfit(self, prices: list[int]) -> int:\n        # Your code here\n        pass\n",
+            "java": "class Solution {\n    public int maxProfit(int[] prices) {\n        // Your code here\n        return 0;\n    }\n}",
         },
-        {
-            "input": "prices = [1, 2, 3, 4, 5]",
-            "output": "4",
-            "explanation": "Buy day 1 (1) and sell day 5 (5), profit = 4.",
-        },
-    ],
-    "starter_code": {
-        "cpp": "class Solution {\npublic:\n    int maxProfit(vector<int>& prices) {\n        // Your code here\n    }\n};",
-        "python": "class Solution:\n    def maxProfit(self, prices: list[int]) -> int:\n        # Your code here\n        pass",
-        "java": "class Solution {\n    public int maxProfit(int[] prices) {\n        // Your code here\n        return 0;\n    }\n}",
+        "public_test_cases": [
+            {"input": {"prices": [7, 1, 5, 3, 6, 4]}, "expected_output": 5},
+            {"input": {"prices": [7, 6, 4, 3, 1]}, "expected_output": 0},
+        ],
+        "hidden_test_cases": [
+            # Minimal constraint: single price entry (no transaction possible)
+            {"input": {"prices": [1]}, "expected_output": 0},
+            # Strictly increasing progression (buy day 1, sell last day)
+            {"input": {"prices": [1, 2, 3, 4, 5]}, "expected_output": 4},
+            # Stagnant prices with identical values throughout
+            {"input": {"prices": [3, 3, 3, 3, 3]}, "expected_output": 0},
+            # Drop at the end (lowest price comes after best selling window)
+            {"input": {"prices": [2, 4, 1]}, "expected_output": 2},
+            # Intermediate peak larger than second recovery peak
+            {"input": {"prices": [10, 2, 11, 1, 9]}, "expected_output": 9},
+        ],
+        "test_cases": [
+            {"input": {"prices": [7, 1, 5, 3, 6, 4]}, "expected_output": 5},
+            {"input": {"prices": [7, 6, 4, 3, 1]}, "expected_output": 0},
+        ],
     },
-    "test_cases": [
-        {"input": {"prices": [7, 1, 5, 3, 6, 4]}, "expected_output": 7},
-        {"input": {"prices": [1, 2, 3, 4, 5]}, "expected_output": 4},
-    ],
-},
 
-"maximum-subarray": {
-    "id": "maximum-subarray",
-    "title": "Maximum Subarray",
-    "topic": "arrays-strings",
-    "difficulty": "Medium",
-    "duration_seconds": 40 * 60,
-    "description": (
-        "Given an integer array nums, locate the contiguous subarray containing "
-        "at least one number that possesses the largest sum, and return that sum."
-    ),
-    "constraints": [
-        "1 <= nums.length <= 10^5",
-        "-10^4 <= nums[i] <= 10^4",
-    ],
-    "examples": [
-        {
-            "input": "nums = [-2, 1, -3, 4, -1, 2, 1, -5, 4]",
-            "output": "6",
-            "explanation": "The subarray [4, -1, 2, 1] has the greatest sum of 6.",
+    "best-time-to-buyII": {
+        "id": "best-time-to-buyII",
+        "title": "Best Time to Buy and Sell Stock II",
+        "topic": "arrays-strings",
+        "difficulty": "Medium",
+        "duration_seconds": 40 * 60,
+        "description": (
+            "You are given an integer array prices. On any day, you may decide to "
+            "buy or sell the stock. You may hold at most one share at any given time, "
+            "but you can buy and sell on the same day. Determine the maximum cumulative "
+            "profit you can achieve."
+        ),
+        "constraints": [
+            "1 <= prices.length <= 3 * 10^4",
+            "0 <= prices[i] <= 10^4",
+        ],
+        "examples": [
+            {
+                "input": "prices = [7, 1, 5, 3, 6, 4]",
+                "output": "7",
+                "explanation": "Buy day 2 (1), sell day 3 (5) = +4. Buy day 4 (3), sell day 5 (6) = +3. Total = 7.",
+            },
+            {
+                "input": "prices = [1, 2, 3, 4, 5]",
+                "output": "4",
+                "explanation": "Buy day 1 (1) and sell day 5 (5), profit = 4.",
+            },
+        ],
+        "starter_code": {
+            "cpp": "class Solution {\npublic:\n    int maxProfit(vector<int>& prices) {\n        // Your code here\n    }\n};",
+            "python": "class Solution:\n    def maxProfit(self, prices: list[int]) -> int:\n        # Your code here\n        pass\n",
+            "java": "class Solution {\n    public int maxProfit(int[] prices) {\n        // Your code here\n        return 0;\n    }\n}",
         },
-        {
-            "input": "nums = [5, 4, -1, 7, 8]",
-            "output": "23",
-            "explanation": "The entire array sums to 23.",
-        },
-    ],
-    "starter_code": {
-        "cpp": "class Solution {\npublic:\n    int maxSubArray(vector<int>& nums) {\n        // Your code here\n    }\n};",
-        "python": "class Solution:\n    def maxSubArray(self, nums: list[int]) -> int:\n        # Your code here\n        pass",
-        "java": "class Solution {\n    public int maxSubArray(int[] nums) {\n        // Your code here\n        return 0;\n    }\n}",
+        "public_test_cases": [
+            {"input": {"prices": [7, 1, 5, 3, 6, 4]}, "expected_output": 7},
+            {"input": {"prices": [1, 2, 3, 4, 5]}, "expected_output": 4},
+        ],
+        "hidden_test_cases": [
+            # Minimal constraint: single day
+            {"input": {"prices": [5]}, "expected_output": 0},
+            # Strictly decreasing: zero profit achievable
+            {"input": {"prices": [7, 6, 4, 3, 1]}, "expected_output": 0},
+            # Multi-peak alternating wave: captures every ascending delta
+            {"input": {"prices": [1, 5, 2, 8, 3, 10]}, "expected_output": 17},
+            # Flat line prices
+            {"input": {"prices": [2, 2, 2, 2]}, "expected_output": 0},
+            # Two-day minimal transaction
+            {"input": {"prices": [2, 7]}, "expected_output": 5},
+        ],
+        "test_cases": [
+            {"input": {"prices": [7, 1, 5, 3, 6, 4]}, "expected_output": 7},
+            {"input": {"prices": [1, 2, 3, 4, 5]}, "expected_output": 4},
+        ],
     },
-    "test_cases": [
-        {"input": {"nums": [-2, 1, -3, 4, -1, 2, 1, -5, 4]}, "expected_output": 6},
-        {"input": {"nums": [1]}, "expected_output": 1},
-    ],
-},
+
+    "maximum-subarray": {
+        "id": "maximum-subarray",
+        "title": "Maximum Subarray",
+        "topic": "arrays-strings",
+        "difficulty": "Medium",
+        "duration_seconds": 40 * 60,
+        "description": (
+            "Given an integer array nums, locate the contiguous subarray containing "
+            "at least one number that possesses the largest sum, and return that sum."
+        ),
+        "constraints": [
+            "1 <= nums.length <= 10^5",
+            "-10^4 <= nums[i] <= 10^4",
+        ],
+        "examples": [
+            {
+                "input": "nums = [-2, 1, -3, 4, -1, 2, 1, -5, 4]",
+                "output": "6",
+                "explanation": "The subarray [4, -1, 2, 1] has the greatest sum of 6.",
+            },
+            {
+                "input": "nums = [5, 4, -1, 7, 8]",
+                "output": "23",
+                "explanation": "The entire array sums to 23.",
+            },
+        ],
+        "starter_code": {
+            "cpp": "class Solution {\npublic:\n    int maxSubArray(vector<int>& nums) {\n        // Your code here\n    }\n};",
+            "python": "class Solution:\n    def maxSubArray(self, nums: list[int]) -> int:\n        # Your code here\n        pass\n",
+            "java": "class Solution {\n    public int maxSubArray(int[] nums) {\n        // Your code here\n        return 0;\n    }\n}",
+        },
+        "public_test_cases": [
+            {"input": {"nums": [-2, 1, -3, 4, -1, 2, 1, -5, 4]}, "expected_output": 6},
+            {"input": {"nums": [1]}, "expected_output": 1},
+        ],
+        "hidden_test_cases": [
+            # All negative values (tests against initializations defaulting to 0)
+            {"input": {"nums": [-5, -2, -8, -1, -4]}, "expected_output": -1},
+            # Entire array is positive
+            {"input": {"nums": [5, 4, 1, 7, 8]}, "expected_output": 25},
+            # Single negative number
+            {"input": {"nums": [-10]}, "expected_output": -10},
+            # Alternating signs with net-zero sections
+            {"input": {"nums": [2, -2, 2, -2, 2]}, "expected_output": 2},
+            # Target subarray bounded by heavy negative extremes
+            {"input": {"nums": [-10, 5, 6, 7, -20]}, "expected_output": 18},
+        ],
+        "test_cases": [
+            {"input": {"nums": [-2, 1, -3, 4, -1, 2, 1, -5, 4]}, "expected_output": 6},
+            {"input": {"nums": [1]}, "expected_output": 1},
+        ],
+    },
 
 "majority-element": {
     "id": "majority-element",
@@ -191,7 +255,7 @@ QEUSTION_BANK = {
         "python": "class Solution:\n    def majorityElement(self, nums: list[int]) -> int:\n        # Your code here\n        pass",
         "java": "class Solution {\n    public int majorityElement(int[] nums) {\n        // Your code here\n        return 0;\n    }\n}",
     },
-    "test_cases": [
+    "public_test_cases": [
         {"input": {"nums": [3, 2, 3]}, "expected_output": 3},
         {"input": {"nums": [2, 2, 1, 1, 1, 2, 2]}, "expected_output": 2},
     ],
@@ -235,7 +299,7 @@ QEUSTION_BANK = {
         "python": "class Solution:\n    def findContentChildren(self, g: list[int], s: list[int]) -> int:\n        # Your code here\n        pass",
         "java": "class Solution {\n    public int findContentChildren(int[] g, int[] s) {\n        // Your code here\n        return 0;\n    }\n}",
     },
-    "test_cases": [
+    "public_test_cases": [
         {"input": {"g": [1, 2, 3], "s": [1, 1]}, "expected_output": 1},
         {"input": {"g": [1, 2], "s": [1, 2, 3]}, "expected_output": 2},
     ],
@@ -273,7 +337,7 @@ QEUSTION_BANK = {
         "python": "class Solution:\n    def canJump(self, nums: list[int]) -> bool:\n        # Your code here\n        pass",
         "java": "class Solution {\n    public boolean canJump(int[] nums) {\n        // Your code here\n        return false;\n    }\n}",
     },
-    "test_cases": [
+    "public_test_cases": [
         {"input": {"nums": [2, 3, 1, 1, 4]}, "expected_output": True},
         {"input": {"nums": [3, 2, 1, 0, 4]}, "expected_output": False},
     ],
@@ -313,7 +377,7 @@ QEUSTION_BANK = {
         "python": "class Solution:\n    def climbStairs(self, n: int) -> int:\n        # Your code here\n        pass",
         "java": "class Solution {\n    public int climbStairs(int n) {\n        // Your code here\n        return 0;\n    }\n}",
     },
-    "test_cases": [
+    "public_test_cases": [
         {"input": {"n": 2}, "expected_output": 2},
         {"input": {"n": 3}, "expected_output": 3},
     ],
@@ -354,7 +418,7 @@ QEUSTION_BANK = {
         "python": "class Solution:\n    def coinChange(self, coins: list[int], amount: int) -> int:\n        # Your code here\n        pass",
         "java": "class Solution {\n    public int coinChange(int[] coins, int amount) {\n        // Your code here\n        return 0;\n    }\n}",
     },
-    "test_cases": [
+    "public_test_cases": [
         {"input": {"coins": [1, 2, 5], "amount": 11}, "expected_output": 3},
         {"input": {"coins": [2], "amount": 3}, "expected_output": -1},
     ],
@@ -392,7 +456,7 @@ QEUSTION_BANK = {
         "python": "class Solution:\n    def numIslands(self, grid: list[list[str]]) -> int:\n        # Your code here\n        pass",
         "java": "class Solution {\n    public int numIslands(char[][] grid) {\n        // Your code here\n        return 0;\n    }\n}",
     },
-    "test_cases": [
+    "public_test_cases": [
         {
             "input": {"grid": [["1", "1", "0"], ["1", "1", "0"], ["0", "0", "1"]]},
             "expected_output": 2,
@@ -436,7 +500,7 @@ QEUSTION_BANK = {
         "python": "class Solution:\n    def canFinish(self, numCourses: int, prerequisites: list[list[int]]) -> bool:\n        # Your code here\n        pass",
         "java": "class Solution {\n    public boolean canFinish(int numCourses, int[][] prerequisites) {\n        // Your code here\n        return false;\n    }\n}",
     },
-    "test_cases": [
+    "public_test_cases": [
         {"input": {"numCourses": 2, "prerequisites": [[1, 0]]}, "expected_output": True},
         {"input": {"numCourses": 2, "prerequisites": [[1, 0], [0, 1]]}, "expected_output": False},
     ],
@@ -475,7 +539,7 @@ QEUSTION_BANK = {
         "python": "class Solution:\n    def countPrimes(self, n: int) -> int:\n        # Your code here\n        pass",
         "java": "class Solution {\n    public int countPrimes(int n) {\n        // Your code here\n        return 0;\n    }\n}",
     },
-    "test_cases": [
+    "public_test_cases": [
         {"input": {"n": 10}, "expected_output": 4},
         {"input": {"n": 0}, "expected_output": 0},
         {"input": {"n": 1}, "expected_output": 0},
@@ -517,7 +581,7 @@ QEUSTION_BANK = {
         "python": "# class TreeNode:\n#     def __init__(self, val=0, left=None, right=None):\n#         self.val = val\n#         self.left = left\n#         self.right = right\nclass Solution:\n    def maxDepth(self, root: Optional[TreeNode]) -> int:\n        # Your code here\n        pass",
         "java": "/**\n * public class TreeNode {\n *     int val;\n *     TreeNode left;\n *     TreeNode right;\n *     TreeNode(int x) { val = x; }\n * }\n */\nclass Solution {\n    public int maxDepth(TreeNode root) {\n        // Your code here\n        return 0;\n    }\n}",
     },
-    "test_cases": [
+    "public_test_cases": [
         {"input": {"tree": [3, 9, 20, None, None, 15, 7]}, "expected_output": 3},
         {"input": {"tree": []}, "expected_output": 0},
     ],
@@ -549,7 +613,7 @@ QEUSTION_BANK = {
         "python": "class Solution:\n    def levelOrder(self, root: Optional[TreeNode]) -> list[list[int]]:\n        # Your code here\n        pass",
         "java": "class Solution {\n    public List<List<Integer>> levelOrder(TreeNode root) {\n        // Your code here\n        return new ArrayList<>();\n    }\n}",
     },
-    "test_cases": [
+    "public_test_cases": [
         {"input": {"tree": [3, 9, 20, None, None, 15, 7]}, "expected_output": [[3], [9, 20], [15, 7]]},
         {"input": {"tree": []}, "expected_output": []},
     ],
@@ -591,7 +655,7 @@ QEUSTION_BANK = {
         "python": "class Solution:\n    def isPalindrome(self, s: str) -> bool:\n        # Your code here\n        pass",
         "java": "class Solution {\n    public boolean isPalindrome(String s) {\n        // Your code here\n        return false;\n    }\n}",
     },
-    "test_cases": [
+    "public_test_cases": [
         {"input": {"s": "A man, a plan, a canal: Panama"}, "expected_output": True},
         {"input": {"s": "race a car"}, "expected_output": False},
     ],
@@ -631,7 +695,7 @@ QEUSTION_BANK = {
         "python": "class Solution:\n    def isSubsequence(self, s: str, t: str) -> bool:\n        # Your code here\n        pass",
         "java": "class Solution {\n    public boolean isSubsequence(String s, String t) {\n        // Your code here\n        return false;\n    }\n}",
     },
-    "test_cases": [
+    "public_test_cases": [
         {"input": {"s": "abc", "t": "ahbgdc"}, "expected_output": True},
         {"input": {"s": "axc", "t": "ahbgdc"}, "expected_output": False},
     ],
@@ -668,7 +732,7 @@ QEUSTION_BANK = {
         "python": "class Solution:\n    def twoSum(self, numbers: list[int], target: int) -> list[int]:\n        # Your code here\n        pass",
         "java": "class Solution {\n    public int[] twoSum(int[] numbers, int target) {\n        // Your code here\n        return new int[]{};\n    }\n}",
     },
-    "test_cases": [
+    "public_test_cases": [
         {"input": {"numbers": [2, 7, 11, 15], "target": 9}, "expected_output": [1, 2]},
         {"input": {"numbers": [2, 3, 4], "target": 6}, "expected_output": [1, 3]},
     ],
@@ -703,7 +767,7 @@ QEUSTION_BANK = {
         "python": "class Solution:\n    def maxArea(self, height: list[int]) -> int:\n        # Your code here\n        pass",
         "java": "class Solution {\n    public int maxArea(int[] height) {\n        // Your code here\n        return 0;\n    }\n}",
     },
-    "test_cases": [
+    "public_test_cases": [
         {"input": {"height": [1, 8, 6, 2, 5, 4, 8, 3, 7]}, "expected_output": 49},
         {"input": {"height": [1, 1]}, "expected_output": 1},
     ],
@@ -736,7 +800,7 @@ QEUSTION_BANK = {
         "python": "class Solution:\n    def threeSum(self, nums: list[int]) -> list[list[int]]:\n        # Your code here\n        pass",
         "java": "class Solution {\n    public List<List<Integer>> threeSum(int[] nums) {\n        // Your code here\n        return new ArrayList<>();\n    }\n}",
     },
-    "test_cases": [
+    "public_test_cases": [
         {"input": {"nums": [-1, 0, 1, 2, -1, -4]}, "expected_output": [[-1, -1, 2], [-1, 0, 1]]},
         {"input": {"nums": [0, 1, 1]}, "expected_output": []},
     ],
@@ -778,7 +842,7 @@ QEUSTION_BANK = {
         "python": "class Solution:\n    def minSubArrayLen(self, target: int, nums: list[int]) -> int:\n        # Your code here\n        pass",
         "java": "class Solution {\n    public int minSubArrayLen(int target, int[] nums) {\n        // Your code here\n        return 0;\n    }\n}",
     },
-    "test_cases": [
+    "public_test_cases": [
         {"input": {"target": 7, "nums": [2, 3, 1, 2, 4, 3]}, "expected_output": 2},
         {"input": {"target": 11, "nums": [1, 1, 1, 1]}, "expected_output": 0},
     ],
@@ -815,7 +879,7 @@ QEUSTION_BANK = {
         "python": "class Solution:\n    def lengthOfLongestSubstring(self, s: str) -> int:\n        # Your code here\n        pass",
         "java": "class Solution {\n    public int lengthOfLongestSubstring(String s) {\n        // Your code here\n        return 0;\n    }\n}",
     },
-    "test_cases": [
+    "public_test_cases": [
         {"input": {"s": "abcabcbb"}, "expected_output": 3},
         {"input": {"s": "bbbbb"}, "expected_output": 1},
     ],
@@ -851,7 +915,7 @@ QEUSTION_BANK = {
         "python": "class Solution:\n    def findSubstring(self, s: str, words: list[str]) -> list[int]:\n        # Your code here\n        pass",
         "java": "class Solution {\n    public List<Integer> findSubstring(String s, String[] words) {\n        // Your code here\n        return new ArrayList<>();\n    }\n}",
     },
-    "test_cases": [
+    "public_test_cases": [
         {"input": {"s": "barfoothefoobarman", "words": ["foo", "bar"]}, "expected_output": [0, 9]},
     ],
 },
@@ -885,7 +949,7 @@ QEUSTION_BANK = {
         "python": "class Solution:\n    def minWindow(self, s: str, t: str) -> str:\n        # Your code here\n        pass",
         "java": "class Solution {\n    public String minWindow(String s, String t) {\n        // Your code here\n        return \"\";\n    }\n}",
     },
-    "test_cases": [
+    "public_test_cases": [
         {"input": {"s": "ADOBECODEBANC", "t": "ABC"}, "expected_output": "BANC"},
         {"input": {"s": "a", "t": "aa"}, "expected_output": ""},
     ],
@@ -927,7 +991,7 @@ QEUSTION_BANK = {
         "python": "# class ListNode:\n#     def __init__(self, x):\n#         self.val = x\n#         self.next = None\nclass Solution:\n    def hasCycle(self, head: Optional[ListNode]) -> bool:\n        # Your code here\n        pass",
         "java": "/**\n * class ListNode {\n *     int val;\n *     ListNode next;\n *     ListNode(int x) { val = x; next = null; }\n * }\n */\npublic class Solution {\n    public boolean hasCycle(ListNode head) {\n        // Your code here\n        return false;\n    }\n}",
     },
-    "test_cases": [
+    "public_test_cases": [
         {"input": {"nodes": [3, 2, 0, -4], "pos": 1}, "expected_output": True},
         {"input": {"nodes": [1], "pos": -1}, "expected_output": False},
     ],
@@ -961,7 +1025,7 @@ QEUSTION_BANK = {
         "python": "class Solution:\n    def addTwoNumbers(self, l1: Optional[ListNode], l2: Optional[ListNode]) -> Optional[ListNode]:\n        # Your code here\n        pass",
         "java": "class Solution {\n    public ListNode addTwoNumbers(ListNode l1, ListNode l2) {\n        // Your code here\n        return null;\n    }\n}",
     },
-    "test_cases": [
+    "public_test_cases": [
         {"input": {"l1": [2, 4, 3], "l2": [5, 6, 4]}, "expected_output": [7, 0, 8]},
     ],
 },
@@ -994,7 +1058,7 @@ QEUSTION_BANK = {
         "python": "class Solution:\n    def mergeTwoLists(self, list1: Optional[ListNode], list2: Optional[ListNode]) -> Optional[ListNode]:\n        # Your code here\n        pass",
         "java": "class Solution {\n    public ListNode mergeTwoLists(ListNode list1, ListNode list2) {\n        // Your code here\n        return null;\n    }\n}",
     },
-    "test_cases": [
+    "public_test_cases": [
         {"input": {"list1": [1, 2, 4], "list2": [1, 3, 4]}, "expected_output": [1, 1, 2, 3, 4, 4]},
     ],
 },
@@ -1027,7 +1091,7 @@ QEUSTION_BANK = {
         "python": "class Solution:\n    def copyRandomList(self, head: 'Optional[Node]') -> 'Optional[Node]':\n        # Your code here\n        pass",
         "java": "class Solution {\n    public Node copyRandomList(Node head) {\n        // Your code here\n        return null;\n    }\n}",
     },
-    "test_cases": [
+    "public_test_cases": [
         {"input": {"nodes": [[7, None], [13, 0]]}, "expected_output": [[7, None], [13, 0]]},
     ],
 },
@@ -1060,7 +1124,7 @@ QEUSTION_BANK = {
         "python": "class Solution:\n    def reverseKGroup(self, head: Optional[ListNode], k: int) -> Optional[ListNode]:\n        # Your code here\n        pass",
         "java": "class Solution {\n    public ListNode reverseKGroup(ListNode head, int k) {\n        // Your code here\n        return null;\n    }\n}",
     },
-    "test_cases": [
+    "public_test_cases": [
         {"input": {"nodes": [1, 2, 3, 4, 5], "k": 2}, "expected_output": [2, 1, 4, 3, 5]},
     ],
 },
@@ -1100,7 +1164,7 @@ QEUSTION_BANK = {
         "python": "class Solution:\n    def isValid(self, s: str) -> bool:\n        # Your code here\n        pass",
         "java": "class Solution {\n    public boolean isValid(String s) {\n        // Your code here\n        return false;\n    }\n}",
     },
-    "test_cases": [
+    "public_test_cases": [
         {"input": {"s": "()[]{}"}, "expected_output": True},
         {"input": {"s": "(]"}, "expected_output": False},
     ],
@@ -1140,7 +1204,7 @@ QEUSTION_BANK = {
         "python": "class Solution:\n    def simplifyPath(self, path: str) -> str:\n        # Your code here\n        pass",
         "java": "class Solution {\n    public String simplifyPath(String path) {\n        // Your code here\n        return \"\";\n    }\n}",
     },
-    "test_cases": [
+    "public_test_cases": [
         {"input": {"path": "/home/"}, "expected_output": "/home"},
         {"input": {"path": "/../"}, "expected_output": "/"},
     ],
@@ -1173,7 +1237,7 @@ QEUSTION_BANK = {
         "python": "class MinStack:\n    def __init__(self):\n        pass\n    def push(self, val: int) -> None:\n        pass\n    def pop(self) -> None:\n        pass\n    def top(self) -> int:\n        pass\n    def getMin(self) -> int:\n        pass",
         "java": "class MinStack {\n    public MinStack() {}\n    public void push(int val) {}\n    public void pop() {}\n    public int top() { return 0; }\n    public int getMin() { return 0; }\n}",
     },
-    "test_cases": [
+    "public_test_cases": [
         {"input": {"operations": ["push", "push", "getMin"], "values": [[-2], [0], []]}, "expected_output": [None, None, -2]},
     ],
 },
@@ -1210,7 +1274,7 @@ QEUSTION_BANK = {
         "python": "class Solution:\n    def evalRPN(self, tokens: list[str]) -> int:\n        # Your code here\n        pass",
         "java": "class Solution {\n    public int evalRPN(String[] tokens) {\n        // Your code here\n        return 0;\n    }\n}",
     },
-    "test_cases": [
+    "public_test_cases": [
         {"input": {"tokens": ["2", "1", "+", "3", "*"]}, "expected_output": 9},
         {"input": {"tokens": ["4", "13", "5", "/", "+"]}, "expected_output": 6},
     ],
@@ -1249,7 +1313,7 @@ QEUSTION_BANK = {
         "python": "class Solution:\n    def calculate(self, s: str) -> int:\n        # Your code here\n        pass",
         "java": "class Solution {\n    public int calculate(String s) {\n        // Your code here\n        return 0;\n    }\n}",
     },
-    "test_cases": [
+    "public_test_cases": [
         {"input": {"s": "1 + 1"}, "expected_output": 2},
         {"input": {"s": "(1+(4+5+2)-3)+(6+8)"}, "expected_output": 23},
     ],
@@ -1290,7 +1354,7 @@ QEUSTION_BANK = {
         "python": "class Solution:\n    def letterCombinations(self, digits: str) -> list[str]:\n        # Your code here\n        pass",
         "java": "class Solution {\n    public List<String> letterCombinations(String digits) {\n        // Your code here\n        return new ArrayList<>();\n    }\n}",
     },
-    "test_cases": [
+    "public_test_cases": [
         {"input": {"digits": "23"}, "expected_output": ["ad", "ae", "af", "bd", "be", "bf", "cd", "ce", "cf"]},
         {"input": {"digits": ""}, "expected_output": []},
     ],
@@ -1326,7 +1390,7 @@ QEUSTION_BANK = {
         "python": "class Solution:\n    def combinationSum(self, candidates: list[int], target: int) -> list[list[int]]:\n        # Your code here\n        pass",
         "java": "class Solution {\n    public List<List<Integer>> combinationSum(int[] candidates, int target) {\n        // Your code here\n        return new ArrayList<>();\n    }\n}",
     },
-    "test_cases": [
+    "public_test_cases": [
         {"input": {"candidates": [2, 3, 6, 7], "target": 7}, "expected_output": [[2, 2, 3], [7]]},
     ],
 },
@@ -1358,7 +1422,7 @@ QEUSTION_BANK = {
         "python": "class Solution:\n    def permute(self, nums: list[int]) -> list[list[int]]:\n        # Your code here\n        pass",
         "java": "class Solution {\n    public List<List<Integer>> permute(int[] nums) {\n        // Your code here\n        return new ArrayList<>();\n    }\n}",
     },
-    "test_cases": [
+    "public_test_cases": [
         {"input": {"nums": [1, 2, 3]}, "expected_output": [[1, 2, 3], [1, 3, 2], [2, 1, 3], [2, 3, 1], [3, 1, 2], [3, 2, 1]]},
         {"input": {"nums": [0, 1]}, "expected_output": [[0, 1], [1, 0]]},
     ],
@@ -1392,7 +1456,7 @@ QEUSTION_BANK = {
         "python": "class Solution:\n    def subsets(self, nums: list[int]) -> list[list[int]]:\n        # Your code here\n        pass",
         "java": "class Solution {\n    public List<List<Integer>> subsets(int[] nums) {\n        // Your code here\n        return new ArrayList<>();\n    }\n}",
     },
-    "test_cases": [
+    "public_test_cases": [
         {"input": {"nums": [1, 2, 3]}, "expected_output": [[], [1], [2], [1, 2], [3], [1, 3], [2, 3], [1, 2, 3]]},
     ],
 },
@@ -1433,7 +1497,7 @@ QEUSTION_BANK = {
         "python": "class Solution:\n    def exist(self, board: list[list[str]], word: str) -> bool:\n        # Your code here\n        pass",
         "java": "class Solution {\n    public boolean exist(char[][] board, String word) {\n        // Your code here\n        return false;\n    }\n}",
     },
-    "test_cases": [
+    "public_test_cases": [
         {
             "input": {
                 "board": [["A", "B", "C", "E"], ["S", "F", "C", "S"], ["A", "D", "E", "E"]],

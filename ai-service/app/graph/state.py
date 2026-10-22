@@ -6,6 +6,10 @@ class InterviewStateSchema(TypedDict):
     interview_id: str
     version: Optional[int]
 
+    # User Association
+    user_email: Optional[str]
+    user_id: Optional[str]
+
     # Problem details
     problem_id: str
     problem_title: str

@@ -1,19 +1,23 @@
-
 from datetime import datetime, timezone
-from typing import Any
+from typing import Any, List
 
-from pymongo import ReturnDocument
+from pymongo import ReturnDocument, DESCENDING
 
 from app.db.mongodb import interviews_collection
 from app.graph.state import InterviewStateSchema
 
 
 def initialize_interview_store() -> None:
-    """Create the unique index required for interview persistence."""
+    """Create indexes required for interview persistence and user history lookups."""
     interviews_collection.create_index(
         [("interview_id", 1)],
         unique=True,
         name="unique_interview_id",
+    )
+    # Index for fast user history and progress queries
+    interviews_collection.create_index(
+        [("user_email", 1), ("started_at", DESCENDING)],
+        name="user_email_started_at_idx",
     )
 
 
@@ -31,9 +35,7 @@ def create_interview(state: InterviewStateSchema) -> None:
     interviews_collection.insert_one(document)
 
 
-def get_interview(
-    interview_id: str,
-) -> dict[str, Any] | None:
+def get_interview(interview_id: str) -> dict[str, Any] | None:
     """Retrieve the complete persisted interview state."""
     return interviews_collection.find_one(
         {"interview_id": interview_id},
@@ -41,17 +43,22 @@ def get_interview(
     )
 
 
+def get_interviews_by_user(user_email: str) -> List[dict[str, Any]]:
+    """Retrieve all interviews associated with a user, newest first."""
+    cursor = interviews_collection.find(
+        {"user_email": user_email},
+        {"_id": 0, "test_cases": 0},  # Exclude internal test cases from user list
+    ).sort("started_at", DESCENDING)
+
+    return list(cursor)
+
+
 def update_interview(
     interview_id: str,
     updates: dict[str, Any],
     expected_version: int,
 ) -> dict[str, Any] | None:
-    """
-    Update an existing interview only if its version matches.
-
-    Returns the updated document, or None if the interview
-    does not exist or its version has changed.
-    """
+    """Update an existing interview only if its version matches."""
     protected_fields = {
         "_id",
         "interview_id",
