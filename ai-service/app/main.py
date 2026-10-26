@@ -1,12 +1,21 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.routes.interview import router as interview_router
+import os
 
 app = FastAPI(
     title="CodeVue AI Interviewer",
     description="AI-powered technical interview service",
     version="1.0.0",
 )
+
+frontend_url = os.getenv("FRONTEND_URL", "http://localhost:5173")
+origins = [
+    frontend_url,
+    f"https://{frontend_url}" if not frontend_url.startswith("http") else frontend_url,
+    "http://localhost:5173",
+    "http://localhost:3000",
+]
 
 app.add_middleware(
     CORSMiddleware,
@@ -32,4 +41,4 @@ def home():
 
 @app.get("/health")
 def health_check():
-    return {"status": "healthy"}
+    return {"status": "ok", "service": "codevue-api"}

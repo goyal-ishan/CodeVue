@@ -1,0 +1,78 @@
+services:
+  # -----------------------------------------------------------
+  # 1. AI-SERVICE (LangGraph / Groq Worker or API)
+  # -----------------------------------------------------------
+  - type: web
+    name: codevue-ai-service
+    runtime: python
+    rootDir: ./ai-service
+    plan: free
+    region: oregon
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn main:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: PORT
+        value: 8001
+      - key: GROQ_API_KEY
+        sync: false
+      - key: INTERVIEW_MONGO_URI
+        sync: false
+
+  # -----------------------------------------------------------
+  # 2. MAIN BACKEND (Docker Sandbox with Compilers + Auth)
+  # -----------------------------------------------------------
+  - type: web
+    name: codevue-backend
+    runtime: docker
+    dockerfilePath: ./backend/Dockerfile
+    dockerContext: ./backend
+    plan: free
+    region: oregon
+    healthCheckPath: /health
+    envVars:
+      - key: PORT
+        value: 8080
+      - key: MONGO_URI
+        sync: false
+      - key: JWT_SECRET_KEY
+        sync: false
+      - key: CODEVUEMAIL
+        sync: false
+      - key: CODEVUEPASS
+        sync: false
+      - key: GOOGLE_CLIENT_ID
+        sync: false
+      - key: GOOGLE_SECRET_CODE
+        sync: false
+      - key: FRONTEND_URL
+        fromService:
+          type: web
+          name: codevue-frontend
+          property: host
+      - key: AI_SERVICE_URL
+        fromService:
+          type: web
+          name: codevue-ai-service
+          property: host
+
+  # -----------------------------------------------------------
+  # 3. FRONTEND (Vite / React Static Site)
+  # -----------------------------------------------------------
+  - type: web
+    name: codevue-frontend
+    runtime: static
+    rootDir: ./frontend
+    buildCommand: npm install && npm run build
+    staticPublishPath: ./frontend/dist
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html
+    envVars:
+      - key: VITE_GOOGLE_CLIENT_ID
+        sync: false
+      - key: VITE_API_URL
+        fromService:
+          type: web
+          name: codevue-backend
+          property: host
