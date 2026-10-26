@@ -3,6 +3,7 @@ import { ArrowRight, Code2 } from 'lucide-react';
 import './GetStarted.css';
 import Header from '../components/Header.jsx';
 import Footer from "../components/Footer.jsx";
+import {API_BASE_URL} from "../config.js";
 function GetStarted() {
     const [formData, setFormData] = useState({
         fullName: '',
@@ -24,7 +25,7 @@ function GetStarted() {
     async function registerUser(data){
         try{
             setError('');
-            const response=await fetch('http://localhost:8080/api/auth/register',
+            const response=await fetch(`${API_BASE_URL}/api/auth/register`,
                 {
                      method: 'POST',
                      headers: {

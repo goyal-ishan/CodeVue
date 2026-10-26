@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import {Link, useNavigate} from "react-router-dom";
 import { Mail, ArrowLeft, ArrowRight, AlertCircle, CheckCircle2, KeyRound } from 'lucide-react';
-
+import { API_BASE_URL } from '../config';
 import './ForgetPassword.css';
 
 const ForgotPassword = () => {
@@ -19,7 +19,7 @@ const ForgotPassword = () => {
             setIsLoading(true);
 
             const response = await fetch(
-                'http://localhost:8080/api/auth/forgot-password',
+                `${API_BASE_URL}/api/auth/forgot-password`,
                 {
                     method: 'POST',
                     headers: {

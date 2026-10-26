@@ -9,7 +9,7 @@ import {
 } from 'lucide-react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import './VerifyOtp.css';
-
+import {API_BASE_URL} from '../config.js';
 const VerifyOtp = () => {
 
     const location = useLocation();
@@ -69,7 +69,7 @@ const VerifyOtp = () => {
             setIsLoading(true);
 
             const response = await fetch(
-                'http://localhost:8080/api/auth/verify-otp',
+                `${API_BASE_URL}/api/auth/verify-otp`,
                 {
                     method: 'POST',
 

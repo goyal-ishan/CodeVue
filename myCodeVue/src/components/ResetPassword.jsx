@@ -9,7 +9,7 @@ import {
 } from 'lucide-react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import './ResetPassword.css';
-
+import {API_BASE_URL} from '../config.js';
 const ResetPassword = () => {
 
     const location = useLocation();
@@ -44,7 +44,7 @@ const ResetPassword = () => {
             setIsLoading(true);
 
             const response = await fetch(
-                'http://localhost:8080/api/auth/reset-pass',
+                `${API_BASE_URL}/api/auth/reset-pass`,
                 {
                     method: 'POST',
                     headers: {

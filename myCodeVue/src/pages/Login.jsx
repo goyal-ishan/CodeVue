@@ -5,7 +5,7 @@ import { ArrowRight, Mail, Lock, Eye, EyeOff } from 'lucide-react';
 import './Login.css';
 import Header from "../components/Header.jsx";
 import Footer from "../components/Footer.jsx";
-
+import {API_BASE_URL} from '../config';
 function Login() {
     const { setUser } = useAuth();
     const navigate = useNavigate();
@@ -45,7 +45,7 @@ const handleGoogleResponse = async (response) => {
         console.log('Sending code to backend...');
 
         const result = await fetch(
-            'http://localhost:8080/api/auth/google',
+            `${API_BASE_URL}/api/auth/google`,
             {
                 method: 'POST',
                 headers: {
@@ -123,7 +123,7 @@ const handleSubmit = async (e) => {
 
     try {
         const response = await fetch(
-            'http://localhost:8080/api/auth/login',
+            `${API_BASE_URL}/api/auth/login`,
             {
                 method: 'POST',
                 headers: {
