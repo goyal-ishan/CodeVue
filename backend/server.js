@@ -19,3 +19,7 @@ app.use('/api/auth', authRoutes);
 app.listen(port,()=>{
     console.log(`Server is listening on port ${port}`);
 })
+
+app.get('/health', (req, res) => {
+  res.status(200).json({ status: 'ok', uptime: process.uptime() });
+});
