@@ -1,8 +1,6 @@
-FROM python:3.11-slim
+FROM node:20-slim
 
-ENV PYTHONDONTWRITEBYTECODE=1
-ENV PYTHONUNBUFFERED=1
-
+# Install C++ compiler (g++), Java (default-jdk), and clean up cache
 RUN apt-get update && apt-get install -y --no-install-recommends \
     g++ \
     default-jdk \
@@ -10,12 +8,17 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 
 WORKDIR /app
 
-COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
+# Copy dependency files first for layer caching
+COPY package*.json ./
 
+# Install production dependencies
+RUN npm install --omit=dev
+
+# Copy backend source code
 COPY . .
 
+# Render exposes PORT dynamically (fallback to 8080)
 ENV PORT=8080
 EXPOSE 8080
 
-CMD
+CMD ["node", "server.js"]

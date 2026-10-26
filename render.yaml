@@ -61,9 +61,9 @@ services:
   - type: web
     name: codevue-frontend
     runtime: static
-    rootDir: ./frontend
+    rootDir: ./myCodeVue
     buildCommand: npm install && npm run build
-    staticPublishPath: ./frontend/dist
+    staticPublishPath: ./myCodeVue/dist
     routes:
       - type: rewrite
         source: /*
