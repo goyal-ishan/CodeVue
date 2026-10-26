@@ -63,7 +63,7 @@ services:
     runtime: static
     rootDir: ./myCodeVue
     buildCommand: npm install && npm run build
-    staticPublishPath: ./myCodeVue/dist
+    staticPublishPath: ./dist
     routes:
       - type: rewrite
         source: /*
